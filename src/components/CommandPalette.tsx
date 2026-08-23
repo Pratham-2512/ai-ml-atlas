@@ -72,7 +72,7 @@ export default function CommandPalette() {
           key: "sudo",
           kind: "easter",
           icon: "🔒",
-          label: "atlas is not in the sudoers file",
+          label: "basecamp is not in the sudoers file",
           sublabel: "this incident will be reported.",
           disabled: true,
         },

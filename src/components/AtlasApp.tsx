@@ -3,6 +3,7 @@
 import { AtlasProvider } from "@/context/AtlasContext";
 import Nav from "./Nav";
 import Hero from "./Hero";
+import StartHere from "./StartHere";
 import Stats from "./Stats";
 import HowItsIndexed from "./HowItsIndexed";
 import Anatomy from "./Anatomy";
@@ -24,6 +25,7 @@ export default function AtlasApp() {
         <CommandPalette />
         <Nav />
         <Hero />
+        <StartHere />
         <Stats />
         <HowItsIndexed />
         <Anatomy />

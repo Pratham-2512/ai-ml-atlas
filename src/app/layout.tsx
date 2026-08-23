@@ -21,7 +21,7 @@ const jbMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI/ML Atlas — 227 easy-to-find AI/ML resources",
+  title: "AI Basecamp — 227 easy-to-find AI/ML resources",
   description:
     "A simple list of the best courses, papers, tools, and blogs about AI and machine learning — sorted into 30 categories, with search, bookmarks, and no sign-up needed.",
 };

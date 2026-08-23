@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Resource } from "@/data/resources";
 import { useAtlas } from "@/context/AtlasContext";
+import { LEVEL_LABEL } from "@/lib/level";
 import { StarIcon, CopyIcon, CheckIcon } from "./icons";
 
 export default function ResourceItem({ item }: { item: Resource }) {
@@ -23,6 +24,7 @@ export default function ResourceItem({ item }: { item: Resource }) {
   return (
     <li data-id={item.id}>
       <div className="res-text">
+        <span className={`level-badge level-${item.level}`}>{LEVEL_LABEL[item.level]}</span>
         <a href={item.href} target="_blank" rel="noopener">
           {item.title}
         </a>

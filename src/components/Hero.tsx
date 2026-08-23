@@ -40,7 +40,7 @@ function TerminalCard() {
     <div className="term" id="termCard">
       <div className="term-bar">
         <span className="term-dot" /> <span className="term-dot" /> <span className="term-dot" />
-        <span className="title">lookup — atlas.index</span>
+        <span className="title">lookup — basecamp.index</span>
       </div>
       <div className="term-body">
         <div className="term-row">
@@ -87,7 +87,7 @@ export default function Hero() {
             Start learning.
           </h1>
           <p className="dek">
-            AI/ML Atlas is a simple list of the best courses, papers, tools, and blogs about AI and machine
+            AI Basecamp is a simple list of the best courses, papers, tools, and blogs about AI and machine
             learning. Everything is checked by hand and sorted into 30 easy categories, so you spend less time
             searching and more time learning.
           </p>

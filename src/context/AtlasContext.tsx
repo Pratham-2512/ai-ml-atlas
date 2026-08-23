@@ -1,8 +1,10 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState, ReactNode } from "react";
+import type { Level } from "@/data/resources";
 
 type Theme = "dark" | "light";
+type LevelFilter = Level | "all";
 
 type AtlasContextValue = {
   theme: Theme;
@@ -18,6 +20,8 @@ type AtlasContextValue = {
   setActiveCategory: (id: string | null) => void;
   paletteOpen: boolean;
   setPaletteOpen: (v: boolean) => void;
+  levelFilter: LevelFilter;
+  setLevelFilter: (v: LevelFilter) => void;
 };
 
 const AtlasContext = createContext<AtlasContextValue | null>(null);
@@ -31,6 +35,7 @@ export function AtlasProvider({ children }: { children: ReactNode }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [levelFilter, setLevelFilter] = useState<LevelFilter>("all");
 
   useEffect(() => {
     const stored = window.localStorage.getItem("atlas.theme") as Theme | null;
@@ -80,8 +85,10 @@ export function AtlasProvider({ children }: { children: ReactNode }) {
       setActiveCategory,
       paletteOpen,
       setPaletteOpen,
+      levelFilter,
+      setLevelFilter,
     }),
-    [theme, bookmarks, showBookmarksOnly, searchQuery, activeCategory, paletteOpen]
+    [theme, bookmarks, showBookmarksOnly, searchQuery, activeCategory, paletteOpen, levelFilter]
   );
 
   return <AtlasContext.Provider value={value}>{children}</AtlasContext.Provider>;

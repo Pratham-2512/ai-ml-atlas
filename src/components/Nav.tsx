@@ -10,7 +10,7 @@ export default function Nav() {
   return (
     <nav className="nav" id="top">
       <div className="brand">
-        <span className="mark">/=/</span> AI/ML Atlas
+        <span className="mark">/=/</span> AI Basecamp
       </div>
       <div className="nav-links">
         <ScrollLink to="how">How we pick resources</ScrollLink>

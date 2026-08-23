@@ -1,4 +1,4 @@
-# AI/ML Atlas
+# AI Basecamp
 
 A personal recreation of [viveknaskar/everything-ai-ml](https://viveknaskar.github.io/everything-ai-ml/) — a curated field guide to 227 AI/ML learning resources across 30 categories.
 

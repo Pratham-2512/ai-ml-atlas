@@ -3,22 +3,32 @@
 import { useMemo } from "react";
 import { categories, totalResources, byId, type Resource } from "@/data/resources";
 import { useAtlas } from "@/context/AtlasContext";
+import { LEVELS, LEVEL_LABEL } from "@/lib/level";
 import CategorySection from "./CategorySection";
 import { CloseIcon } from "./icons";
 
 export default function FullIndex() {
-  const { searchQuery, setSearchQuery, activeCategory, setActiveCategory, showBookmarksOnly, isBookmarked } =
-    useAtlas();
+  const {
+    searchQuery,
+    setSearchQuery,
+    activeCategory,
+    setActiveCategory,
+    showBookmarksOnly,
+    isBookmarked,
+    levelFilter,
+    setLevelFilter,
+  } = useAtlas();
 
   const query = searchQuery.trim().toLowerCase();
 
   const filter = useMemo(() => {
     return (item: Resource) => {
       if (showBookmarksOnly && !isBookmarked(item.id)) return false;
+      if (levelFilter !== "all" && item.level !== levelFilter) return false;
       if (!query) return true;
       return `${item.title} ${item.desc}`.toLowerCase().includes(query);
     };
-  }, [query, showBookmarksOnly, isBookmarked]);
+  }, [query, showBookmarksOnly, isBookmarked, levelFilter]);
 
   const visibleCategories = activeCategory ? categories.filter((c) => c.id === activeCategory) : categories;
 
@@ -27,7 +37,7 @@ export default function FullIndex() {
     0
   );
 
-  const isFiltering = Boolean(query) || showBookmarksOnly;
+  const isFiltering = Boolean(query) || showBookmarksOnly || levelFilter !== "all";
   const activeCategoryTitle = activeCategory ? byId(activeCategory)?.title : null;
 
   return (
@@ -48,6 +58,26 @@ export default function FullIndex() {
           <span className="match-count" aria-live="polite">
             {isFiltering ? `${totalVisible} match${totalVisible === 1 ? "" : "es"}` : ""}
           </span>
+        </div>
+
+        <div className="level-filters" role="group" aria-label="Filter by difficulty">
+          <button
+            type="button"
+            className={`level-pill${levelFilter === "all" ? " is-active" : ""}`}
+            onClick={() => setLevelFilter("all")}
+          >
+            All levels
+          </button>
+          {LEVELS.map((lvl) => (
+            <button
+              key={lvl}
+              type="button"
+              className={`level-pill level-${lvl}${levelFilter === lvl ? " is-active" : ""}`}
+              onClick={() => setLevelFilter(levelFilter === lvl ? "all" : lvl)}
+            >
+              {LEVEL_LABEL[lvl]}
+            </button>
+          ))}
         </div>
 
         {activeCategoryTitle && (

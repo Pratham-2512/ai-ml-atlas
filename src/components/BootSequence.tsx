@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { totalResources, totalCategories } from "@/data/resources";
 
 const LINES = [
-  "atlas@index:~$ boot --profile=ai-ml",
+  "basecamp@index:~$ boot --profile=ai-ml",
   `mounting ${totalCategories} categories ... OK`,
   `indexing ${totalResources} resources ... OK`,
   "verifying links ... OK",
   "checking for signup walls ... none found",
-  "atlas ready. press any key.",
+  "basecamp ready. press any key.",
 ];
 
 const SESSION_KEY = "atlas.booted";
