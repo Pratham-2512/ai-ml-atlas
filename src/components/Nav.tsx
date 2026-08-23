@@ -13,8 +13,8 @@ export default function Nav() {
         <span className="mark">/=/</span> AI Basecamp
       </div>
       <div className="nav-links">
-        <ScrollLink to="how">How we pick resources</ScrollLink>
-        <ScrollLink to="anatomy">What&apos;s in an entry</ScrollLink>
+        <ScrollLink to="how">How we pick</ScrollLink>
+        <ScrollLink to="anatomy">What&apos;s inside</ScrollLink>
         <ScrollLink to="categories">Categories</ScrollLink>
         <ScrollLink to="full-index">Full index</ScrollLink>
       </div>
@@ -40,7 +40,7 @@ export default function Nav() {
           {theme === "dark" ? <SunIcon /> : <MoonIcon />}
         </button>
         <ScrollLink to="full-index" className="btn btn-primary">
-          Browse all resources
+          Browse resources
         </ScrollLink>
       </div>
     </nav>
