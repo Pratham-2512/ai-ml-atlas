@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI/ML Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e1a;
+    --bg-2:#0d1220;
+    --surface:#12172a;
+    --surface-2:#171d34;
+    --line:#232b46;
+    --line-soft:#1a2038;
+    --ink:#edf0f8;
+    --ink-soft:#a8afc9;
+    --muted:#666f8f;
+    --accent:#35e2c4;
+    --accent-ink:#06110f;
+    --accent-soft:rgba(53,226,196,0.13);
+    --warm:#ffb454;
+    --warm-soft:rgba(255,180,84,0.13);
+    --font-display:"Sora", "Segoe UI", sans-serif;
+    --font-body:"Manrope", "Segoe UI", sans-serif;
+    --font-mono:"JetBrains Mono", "Consolas", monospace;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--font-body); font-size:16px; line-height:1.6;
+  }
+  a{color:inherit; text-decoration:none;}
+  h1,h2,h3{font-family:var(--font-display); text-wrap:balance; margin:0; letter-spacing:-0.01em;}
+  ::selection{background:var(--accent-soft); color:var(--ink);}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:3px;}
+
+  .wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
+
+  /* ---------- Nav ---------- */
+  .nav{
+    position:sticky; top:0; z-index:20;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 28px; max-width:1180px; margin:0 auto;
+    background:linear-gradient(to bottom, rgba(10,14,26,0.92), rgba(10,14,26,0.75));
+    backdrop-filter:blur(10px);
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:1.05rem;}
+  .brand .mark{
+    width:30px; height:30px; border-radius:8px; background:var(--accent-soft); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); color:var(--accent); font-size:0.85rem;
+  }
+  .nav-links{display:flex; align-items:center; gap:28px; font-size:0.92rem; color:var(--ink-soft);}
+  .nav-links a:hover{color:var(--ink);}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:0.85rem; font-weight:500;
+    padding:10px 18px; border-radius:8px; border:1px solid var(--line);
+    transition:border-color .15s, transform .15s, background .15s;
+  }
+  .btn-primary{background:var(--accent); color:var(--accent-ink); border-color:var(--accent);}
+  .btn-primary:hover{transform:translateY(-1px); box-shadow:0 8px 24px -8px var(--accent-soft);}
+  .btn-ghost{color:var(--ink-soft);}
+  .btn-ghost:hover{border-color:var(--muted); color:var(--ink);}
+  @media (prefers-reduced-motion: no-preference){ .btn{transition:border-color .15s, transform .15s, background .15s;} }
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative; overflow:hidden; padding:64px 0 40px;}
+  .hero canvas{position:absolute; inset:0; width:100%; height:100%; z-index:0; opacity:0.55;}
+  .hero::after{
+    content:""; position:absolute; inset:0; z-index:0;
+    background:radial-gradient(ellipse 60% 50% at 50% 0%, rgba(53,226,196,0.10), transparent 70%);
+  }
+  .hero-inner{position:relative; z-index:1; display:grid; grid-template-columns:1.1fr 0.9fr; gap:48px; align-items:center;}
+  .kicker{
+    display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:0.78rem;
+    color:var(--accent); letter-spacing:0.04em; margin-bottom:18px;
+  }
+  .kicker::before{content:"●"; font-size:0.6rem;}
+  .hero h1{font-size:clamp(2.5rem, 4.2vw, 3.6rem); font-weight:700; line-height:1.05;}
+  .hero .dek{margin:20px 0 0; color:var(--ink-soft); font-size:1.1rem; max-width:46ch;}
+  .hero-cta{display:flex; align-items:center; gap:18px; margin-top:32px; flex-wrap:wrap;}
+  .hero-cta .btn-primary{padding:13px 22px; font-size:0.9rem;}
+  .link-more{font-size:0.88rem; color:var(--ink-soft); border-bottom:1px solid var(--line);}
+  .link-more:hover{color:var(--ink); border-color:var(--muted);}
+
+  /* terminal lookup card */
+  .term{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    font-family:var(--font-mono); font-size:0.86rem; overflow:hidden;
+    box-shadow:0 30px 60px -30px rgba(0,0,0,0.6);
+  }
+  .term-bar{
+    display:flex; align-items:center; gap:8px; padding:11px 14px;
+    border-bottom:1px solid var(--line); background:var(--surface-2);
+  }
+  .term-dot{width:9px; height:9px; border-radius:50%; background:var(--line);}
+  .term-bar span.title{margin-left:6px; color:var(--muted); font-size:0.76rem;}
+  .term-body{padding:20px 18px 22px; min-height:190px;}
+  .term-row{display:flex; gap:14px; padding:5px 0; align-items:baseline;}
+  .term-row .k{color:var(--muted); width:78px; flex-shrink:0; font-size:0.78rem;}
+  .term-row .v{color:var(--ink); font-size:0.86rem;}
+  .term-row .v.title{color:var(--accent); font-weight:600;}
+  .term-row .v.ok{color:var(--accent);}
+  .term-cursor{display:inline-block; width:7px; height:14px; background:var(--accent); margin-left:4px; vertical-align:-2px; animation:blink 1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+  @media (prefers-reduced-motion: reduce){ .term-cursor{animation:none;} }
+
+  /* ---------- Stats ---------- */
+  .stats{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--bg-2);}
+  .stats-grid{display:grid; grid-template-columns:repeat(4,1fr); text-align:center;}
+  .stat{padding:28px 12px; border-right:1px solid var(--line);}
+  .stat:last-child{border-right:none;}
+  .stat .n{font-family:var(--font-mono); font-size:1.9rem; font-weight:700; color:var(--accent);}
+  .stat .l{font-size:0.8rem; color:var(--muted); margin-top:4px; letter-spacing:0.03em; text-transform:uppercase;}
+
+  /* ---------- Sections generic ---------- */
+  section.block{padding:88px 0;}
+  .eyebrow{font-family:var(--font-mono); font-size:0.78rem; color:var(--warm); letter-spacing:0.05em; text-transform:uppercase; margin:0 0 12px;}
+  .block h2{font-size:clamp(1.8rem, 2.6vw, 2.3rem); font-weight:700; max-width:26ch;}
+  .block .lede{color:var(--ink-soft); max-width:60ch; margin:14px 0 0; font-size:1.02rem;}
+
+  /* steps */
+  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:44px;}
+  .step{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:26px 24px;}
+  .step .idx{font-family:var(--font-mono); color:var(--accent); font-size:0.85rem; margin-bottom:14px; display:block;}
+  .step h3{font-size:1.15rem; font-weight:600; margin-bottom:8px;}
+  .step p{color:var(--ink-soft); font-size:0.94rem; margin:0;}
+
+  /* anatomy */
+  .anatomy{display:grid; grid-template-columns:1fr 1.1fr; gap:56px; margin-top:44px; align-items:center;}
+  .entry-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px;
+    position:relative;
+  }
+  .entry-card .link-line{font-weight:600; color:var(--ink); font-size:0.98rem;}
+  .entry-card .link-line .arrow{color:var(--muted); font-size:0.8em;}
+  .entry-card .desc{color:var(--ink-soft); font-size:0.92rem; margin-top:6px;}
+  .anno-list{display:flex; flex-direction:column; gap:20px;}
+  .anno{display:flex; gap:14px; align-items:flex-start;}
+  .anno .tag{font-family:var(--font-mono); font-size:0.72rem; color:var(--accent-ink); background:var(--accent); border-radius:5px; padding:2px 7px; flex-shrink:0; margin-top:2px;}
+  .anno p{margin:0; color:var(--ink-soft); font-size:0.92rem;}
+  .anno strong{color:var(--ink); font-weight:600;}
+
+  /* categories */
+  .cat-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-top:40px;}
+  .cat-chip{
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    padding:13px 16px; background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    font-size:0.9rem; transition:border-color .15s, background .15s;
+  }
+  .cat-chip:hover{border-color:var(--accent); background:var(--surface-2);}
+  .cat-chip .cn{font-family:var(--font-mono); font-size:0.78rem; color:var(--muted);}
+  .cat-chip:hover .cn{color:var(--accent);}
+
+  /* CTA band */
+  .cta-band{
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    background:radial-gradient(ellipse 70% 100% at 50% 100%, rgba(53,226,196,0.08), transparent 70%), var(--bg-2);
+    text-align:center; padding:90px 0;
+  }
+  .cta-band h2{font-size:clamp(1.9rem,3vw,2.5rem); max-width:26ch; margin:0 auto;}
+  .cta-band .lede{margin:16px auto 0; max-width:48ch;}
+  .cta-band .hero-cta{justify-content:center; margin-top:34px;}
+
+  /* footer */
+  footer{padding:44px 0 60px; color:var(--muted); font-size:0.86rem;}
+  footer .foot-top{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:20px; padding-bottom:24px; border-bottom:1px solid var(--line); margin-bottom:20px;}
+  footer a{color:var(--ink-soft);}
+  footer a:hover{color:var(--accent);}
+
+  /* ---------- Full index ---------- */
+  .index-search{margin:44px 0 8px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+  .index-search input{
+    flex:1; min-width:240px; padding:12px 16px; border-radius:9px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink); font-family:var(--font-body); font-size:0.95rem;
+  }
+  .index-search input::placeholder{color:var(--muted);}
+  .index-search .match-count{font-family:var(--font-mono); font-size:0.8rem; color:var(--muted); white-space:nowrap;}
+
+  .cat{border-top:1px solid var(--line-soft); padding:38px 0 6px; scroll-margin-top:84px;}
+  .cat:first-of-type{border-top:none;}
+  .cat.no-match{display:none;}
+  .cat-head{display:flex; align-items:baseline; gap:12px; margin-bottom:20px; flex-wrap:wrap;}
+  .cat-head h2{font-size:1.4rem; font-weight:700;}
+  .cat-head .count{
+    font-family:var(--font-mono); font-size:0.72rem; color:var(--muted); background:var(--surface);
+    border:1px solid var(--line); border-radius:20px; padding:2px 10px; margin-left:auto;
+  }
+  .subgroup{margin:0 0 22px; padding-left:calc(2.1em + 12px);}
+  .subgroup h4{
+    font-family:var(--font-mono); font-size:0.74rem; letter-spacing:0.04em; text-transform:uppercase;
+    color:var(--ink-soft); margin:0 0 10px; font-weight:600;
+  }
+  .subgroup:last-child{margin-bottom:0;}
+  ul.res{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px;}
+  ul.res li{padding:12px 15px; background:var(--surface); border:1px solid var(--line); border-radius:9px; line-height:1.5; font-size:0.94rem;}
+  ul.res li.hidden{display:none;}
+  ul.res li a{font-weight:600; text-decoration:none; color:var(--ink); border-bottom:1px solid transparent;}
+  ul.res li a:hover{border-bottom-color:var(--accent); color:var(--accent);}
+  ul.res li a::after{content:" ↗"; font-size:0.72em; color:var(--muted);}
+  ul.res li .sep{color:var(--muted); margin:0 3px;}
+  ul.res li .d{color:var(--ink-soft); font-size:0.92rem;}
+
+  @media (max-width: 900px){
+    .hero-inner{grid-template-columns:1fr;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(2){border-right:none;}
+    .steps{grid-template-columns:1fr;}
+    .anatomy{grid-template-columns:1fr;}
+    .cat-grid{grid-template-columns:1fr 1fr;}
+    .nav-links{display:none;}
+  }
+  @media (max-width: 560px){
+    .cat-grid{grid-template-columns:1fr;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);}
+    .subgroup{padding-left:0;}
+  }
+  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
+</style>
+</head>
+<body>
+
+<nav class="nav" id="top">
+  <div class="brand"><span class="mark">/=/</span> AI/ML Atlas</div>
+  <div class="nav-links">
+    <a href="#how">How it's indexed</a>
+    <a href="#anatomy">Anatomy of an entry</a>
+    <a href="#categories">Categories</a>
+    <a href="#full-index">Full index</a>
+  </div>
+  <a class="btn btn-primary" href="#full-index">Browse the index</a>
+</nav>
+
+<header class="hero">
+  <canvas id="grid" aria-hidden="true"></canvas>
+  <div class="wrap hero-inner">
+    <div>
+      <p class="kicker">227 RESOURCES · HAND-VERIFIED</p>
+      <h1>Stop bookmarking.<br>Start indexing.</h1>
+      <p class="dek">AI/ML Atlas is a hand-verified index of the best courses, papers, frameworks, and blogs in AI/ML — sorted into 30 categories, so you spend less time searching and more time learning.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#full-index">Browse the index →</a>
+        <a class="link-more" href="#how">See how it's indexed ↓</a>
+      </div>
+    </div>
+    <div class="term" id="termCard">
+      <div class="term-bar"><span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span><span class="title">lookup — atlas.index</span></div>
+      <div class="term-body" id="termBody"></div>
+    </div>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="wrap stats-grid">
+    <div class="stat"><div class="n">227</div><div class="l">Resources</div></div>
+    <div class="stat"><div class="n">30</div><div class="l">Categories</div></div>
+    <div class="stat"><div class="n">24</div><div class="l">Step roadmap</div></div>
+    <div class="stat"><div class="n">11</div><div class="l">Must-read papers</div></div>
+  </div>
+</div>
+
+<section class="block" id="how">
+  <div class="wrap">
+    <p class="eyebrow">Process</p>
+    <h2>How it's indexed</h2>
+    <p class="lede">Every entry goes through the same three-step pipeline before it earns a place in the Atlas — no aggregator spam, no dead links, no guesswork.</p>
+    <div class="steps">
+      <div class="step"><span class="idx">01 / COLLECTED</span><h3>Pulled from primary sources</h3><p>Official docs, university courses, arXiv preprints, and engineering blogs — never a listicle repackaging someone else's list.</p></div>
+      <div class="step"><span class="idx">02 / VERIFIED</span><h3>Every link, opened</h3><p>Courses are checked for a live syllabus, papers are matched against arXiv, and repos are checked for recent activity.</p></div>
+      <div class="step"><span class="idx">03 / CATEGORIZED</span><h3>Filed into 30 categories</h3><p>From Key Concepts to Interview Prep — so a resource never gets buried in a wall of undifferentiated links.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="anatomy" style="background:var(--bg-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <p class="eyebrow">Anatomy of an entry</p>
+    <h2>Every entry carries the same four fields</h2>
+    <div class="anatomy">
+      <div class="entry-card">
+        <div class="link-line">Attention Is All You Need <span class="arrow">↗</span></div>
+        <div class="desc">The paper that introduced the Transformer architecture</div>
+      </div>
+      <div class="anno-list">
+        <div class="anno"><span class="tag">TITLE</span><p><strong>The resource itself</strong> — always the primary source, never a summary page.</p></div>
+        <div class="anno"><span class="tag">SOURCE</span><p><strong>Who published it</strong> — Google, arXiv, DeepLearning.AI, an individual researcher.</p></div>
+        <div class="anno"><span class="tag">NOTE</span><p><strong>One honest line</strong> on what it actually covers, so you can decide in five seconds.</p></div>
+        <div class="anno"><span class="tag">CATEGORY</span><p><strong>Exactly one of 30 categories</strong> — no orphaned entries, no duplicate homes.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="categories">
+  <div class="wrap">
+    <p class="eyebrow">Directory</p>
+    <h2>30 categories, fully indexed</h2>
+    <p class="lede">Foundations through frontier — jump straight to the section you need.</p>
+    <div class="cat-grid">
+      <a class="cat-chip" href="#key-concepts">Key Concepts <span class="cn">15</span></a>
+      <a class="cat-chip" href="#building-blocks">Building Blocks <span class="cn">12</span></a>
+      <a class="cat-chip" href="#roadmap">Roadmap <span class="cn">24</span></a>
+      <a class="cat-chip" href="#genai-general">Generative AI — General <span class="cn">11</span></a>
+      <a class="cat-chip" href="#genai-advanced">Generative AI — Advanced <span class="cn">6</span></a>
+      <a class="cat-chip" href="#prompt-engineering">Prompt Engineering <span class="cn">10</span></a>
+      <a class="cat-chip" href="#rag">RAG <span class="cn">3</span></a>
+      <a class="cat-chip" href="#fine-tuning">Fine-tuning <span class="cn">3</span></a>
+      <a class="cat-chip" href="#frameworks">Frameworks <span class="cn">16</span></a>
+      <a class="cat-chip" href="#agentic-ai">Agentic AI <span class="cn">16</span></a>
+      <a class="cat-chip" href="#mlops">MLOps &amp; GenAIOps <span class="cn">5</span></a>
+      <a class="cat-chip" href="#security">Security <span class="cn">3</span></a>
+      <a class="cat-chip" href="#google-cloud">Google Cloud AI &amp; ML <span class="cn">8</span></a>
+      <a class="cat-chip" href="#cost-optimization">Cost Optimization <span class="cn">3</span></a>
+      <a class="cat-chip" href="#adopting-genai">Adopting GenAI <span class="cn">3</span></a>
+      <a class="cat-chip" href="#productivity">AI for Productivity <span class="cn">3</span></a>
+      <a class="cat-chip" href="#quantum">Quantum &amp; PQC <span class="cn">2</span></a>
+      <a class="cat-chip" href="#sdlc">AI-Augmented SDLC <span class="cn">3</span></a>
+      <a class="cat-chip" href="#coming-innovations">Coming Innovations <span class="cn">1</span></a>
+      <a class="cat-chip" href="#courses">Courses <span class="cn">10</span></a>
+      <a class="cat-chip" href="#certifications">Certifications <span class="cn">4</span></a>
+      <a class="cat-chip" href="#books">Books <span class="cn">8</span></a>
+      <a class="cat-chip" href="#papers">Must-Read Papers <span class="cn">11</span></a>
+      <a class="cat-chip" href="#tools">Tools &amp; Frameworks <span class="cn">8</span></a>
+      <a class="cat-chip" href="#youtube">YouTube Channels <span class="cn">5</span></a>
+      <a class="cat-chip" href="#research-blogs">Research Blogs <span class="cn">7</span></a>
+      <a class="cat-chip" href="#applied-blogs">Applied AI/ML Blogs <span class="cn">8</span></a>
+      <a class="cat-chip" href="#communities">Communities <span class="cn">3</span></a>
+      <a class="cat-chip" href="#practice">Practice Problems <span class="cn">10</span></a>
+      <a class="cat-chip" href="#interview">Interview Prep <span class="cn">6</span></a>
+    </div>
+  </div>
+</section>
+<section class="block" id="full-index">
+  <div class="wrap">
+    <p class="eyebrow">The full index</p>
+    <h2>All 227 resources, one by one</h2>
+    <p class="lede">Search across every entry below, or scroll — nothing here is paywalled behind a "view more."</p>
+    <div class="index-search">
+      <input type="search" id="indexSearch" placeholder="Search resources…" aria-label="Search resources">
+      <span class="match-count" id="indexMatchCount" aria-live="polite"></span>
+    </div>
+    <section class="cat" id="key-concepts">
+      <header class="cat-head"><span class="stamp">🧠</span><h2>AI/ML Key Concepts</h2><span class="count">15</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://medium.com/@kodeinkgp/supervised-learning-a-comprehensive-guide-7032b34d5097" target="_blank" rel="noopener">Supervised Learning</a><span class="sep">—</span><span class="d">Comprehensive guide to supervised learning algorithms and use cases</span></li>
+        <li><a href="https://cloud.google.com/discover/what-is-unsupervised-learning" target="_blank" rel="noopener">Unsupervised Learning</a><span class="sep">—</span><span class="d">Google Cloud's explainer on unsupervised learning techniques</span></li>
+        <li><a href="https://spinningup.openai.com/en/latest/user/introduction.html" target="_blank" rel="noopener">Reinforcement Learning</a><span class="sep">—</span><span class="d">OpenAI Spinning Up's introduction to reinforcement learning concepts</span></li>
+        <li><a href="https://www.datacamp.com/tutorial/tutorial-deep-learning-tutorial" target="_blank" rel="noopener">Deep Learning</a><span class="sep">—</span><span class="d">DataCamp tutorial covering deep learning fundamentals</span></li>
+        <li><a href="https://medium.com/@ageitgey/natural-language-processing-is-fun-9a0bff37854e" target="_blank" rel="noopener">Natural Language Processing (NLP)</a><span class="sep">—</span><span class="d">Beginner-friendly introduction to natural language processing</span></li>
+        <li><a href="https://www.geeksforgeeks.org/computer-vision/" target="_blank" rel="noopener">Computer Vision</a><span class="sep">—</span><span class="d">GeeksforGeeks overview of computer vision fundamentals</span></li>
+        <li><a href="https://aws.amazon.com/what-is/gan/" target="_blank" rel="noopener">Generative Adversarial Networks (GANs)</a><span class="sep">—</span><span class="d">AWS explainer on how generative adversarial networks work</span></li>
+        <li><a href="https://scikit-learn.org/stable/modules/decomposition.html" target="_blank" rel="noopener">Dimensionality Reduction</a><span class="sep">—</span><span class="d">Scikit-learn guide to PCA and other dimensionality reduction methods</span></li>
+        <li><a href="https://scikit-learn.org/stable/modules/clustering.html" target="_blank" rel="noopener">Clustering Algorithms</a><span class="sep">—</span><span class="d">Scikit-learn documentation on clustering algorithms</span></li>
+        <li><a href="https://www.statlect.com/fundamentals-of-statistics/Bayesian-inference" target="_blank" rel="noopener">Bayesian Inference</a><span class="sep">—</span><span class="d">StatLect lecture notes on Bayesian inference fundamentals</span></li>
+        <li><a href="https://otexts.com/fpp3/" target="_blank" rel="noopener">Time Series Analysis</a><span class="sep">—</span><span class="d">Free online textbook on forecasting and time series analysis</span></li>
+        <li><a href="https://lilianweng.github.io/posts/2021-05-31-self-supervised-learning/" target="_blank" rel="noopener">Self-Supervised Learning</a><span class="sep">—</span><span class="d">Lilian Weng's deep dive into self-supervised learning methods</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>Interactive visualizations</h4><ul class="res">
+        <li><a href="https://mlu-explain.github.io" target="_blank" rel="noopener">MLU-Explain</a><span class="sep">—</span><span class="d">Interactive visual explanations of core ML concepts</span></li>
+        <li><a href="https://poloclub.github.io/cnn-explainer/" target="_blank" rel="noopener">CNN Explainer</a><span class="sep">—</span><span class="d">In-browser interactive explainer for Convolutional Neural Networks</span></li>
+        <li><a href="https://poloclub.github.io/transformer-explainer/" target="_blank" rel="noopener">Transformer Explainer</a><span class="sep">—</span><span class="d">Interactive visualization of the Transformer architecture</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="building-blocks">
+      <header class="cat-head"><span class="stamp">🔧</span><h2>AI/ML Building Blocks</h2><span class="count">12</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://gwthomas.github.io/docs/math4ml.pdf" target="_blank" rel="noopener">Mathematics for Machine Learning (UC Berkeley)</a><span class="sep">—</span><span class="d">UC Berkeley lecture notes covering the math foundations for ML</span></li>
+        <li><a href="https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/" target="_blank" rel="noopener">Linear Algebra for ML – MIT OpenCourseWare</a><span class="sep">—</span><span class="d">MIT's full linear algebra course, free and self-paced</span></li>
+        <li><a href="https://www.youtube.com/watch?v=2MuDZIAzBMY&list=PLoROMvodv4rOpr_A7B9SriE_iZmkanvUg" target="_blank" rel="noopener">Probability &amp; Statistics – Stanford</a><span class="sep">—</span><span class="d">Stanford lecture series on probability and statistics</span></li>
+        <li><a href="https://www.khanacademy.org/math/multivariable-calculus" target="_blank" rel="noopener">Calculus for Optimization – Khan Academy</a><span class="sep">—</span><span class="d">Khan Academy's free multivariable calculus course</span></li>
+        <li><a href="https://www.coursera.org/learn/ai-python-for-beginners" target="_blank" rel="noopener">Python for ML – Coursera</a><span class="sep">—</span><span class="d">Coursera course teaching Python fundamentals for AI</span></li>
+        <li><a href="https://www.geeksforgeeks.org/optimization-algorithms-in-machine-learning/" target="_blank" rel="noopener">Optimization Techniques</a><span class="sep">—</span><span class="d">Overview of optimization algorithms used in machine learning</span></li>
+        <li><a href="https://www.geeksforgeeks.org/what-is-feature-engineering/" target="_blank" rel="noopener">Data Preprocessing &amp; Feature Engineering</a><span class="sep">—</span><span class="d">Guide to feature engineering and data preprocessing techniques</span></li>
+        <li><a href="https://scikit-learn.org/stable/modules/model_evaluation.html" target="_blank" rel="noopener">Model Evaluation &amp; Metrics</a><span class="sep">—</span><span class="d">Scikit-learn documentation on model evaluation metrics</span></li>
+        <li><a href="https://www.geeksforgeeks.org/regularization-in-machine-learning/" target="_blank" rel="noopener">Regularization Techniques</a><span class="sep">—</span><span class="d">Overview of regularization methods used to prevent overfitting</span></li>
+        <li><a href="https://www.datacamp.com/tutorial/loss-function-in-machine-learning" target="_blank" rel="noopener">Loss Functions</a><span class="sep">—</span><span class="d">DataCamp tutorial on common loss functions in machine learning</span></li>
+        <li><a href="https://ml-cheatsheet.readthedocs.io/en/latest/activation_functions.html" target="_blank" rel="noopener">Activation Functions</a><span class="sep">—</span><span class="d">Cheat sheet covering neural network activation functions</span></li>
+        <li><a href="https://www.geeksforgeeks.org/hyperparameter-tuning/" target="_blank" rel="noopener">Hyperparameter Tuning</a><span class="sep">—</span><span class="d">Guide to hyperparameter tuning strategies</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="roadmap">
+      <header class="cat-head"><span class="stamp">🗺️</span><h2>AI/ML Roadmap</h2><span class="count">24</span></header>
+      <div class="subgroup"><h4>1. Learn Python and core libraries</h4><ul class="res">
+        <li><a href="https://cs50.harvard.edu/python/2022/" target="_blank" rel="noopener">Intro Python – Harvard CS50</a><span class="sep">—</span><span class="d">Harvard's CS50 introduction to Python programming</span></li>
+        <li><a href="https://www.edx.org/learn/artificial-intelligence/harvard-university-cs50-s-introduction-to-artificial-intelligence-with-python" target="_blank" rel="noopener">Advanced Python – Harvard AI with Python</a><span class="sep">—</span><span class="d">Harvard's CS50 course on AI with Python</span></li>
+        <li><a href="https://numpy.org/devdocs/user/quickstart.html" target="_blank" rel="noopener">NumPy Quickstart</a><span class="sep">—</span><span class="d">Official NumPy quickstart tutorial</span></li>
+        <li><a href="https://www.w3schools.com/python/pandas/default.asp" target="_blank" rel="noopener">Pandas Tutorial</a><span class="sep">—</span><span class="d">W3Schools tutorial on the Pandas library</span></li>
+        <li><a href="https://matplotlib.org/stable/tutorials/index.html" target="_blank" rel="noopener">Matplotlib Tutorials</a><span class="sep">—</span><span class="d">Official Matplotlib tutorials for data visualization</span></li>
+        <li><a href="https://scikit-learn.org/1.4/tutorial/index.html" target="_blank" rel="noopener">Scikit-learn Tutorial</a><span class="sep">—</span><span class="d">Official scikit-learn getting-started tutorial</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>2. Build a strong math foundation</h4><ul class="res">
+        <li><a href="https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/" target="_blank" rel="noopener">Linear Algebra – MIT</a><span class="sep">—</span><span class="d">MIT's full linear algebra course, free and self-paced</span></li>
+        <li><a href="https://web.stanford.edu/class/stats116/syllabus.html" target="_blank" rel="noopener">Probability &amp; Statistics – Stanford</a><span class="sep">—</span><span class="d">Stanford course syllabus for probability and statistics</span></li>
+        <li><a href="https://www.khanacademy.org/math/multivariable-calculus" target="_blank" rel="noopener">Multivariable Calculus – Khan Academy</a><span class="sep">—</span><span class="d">Khan Academy's free multivariable calculus course</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>3. Learn ML fundamentals</h4><ul class="res">
+        <li><a href="https://developers.google.com/machine-learning/crash-course" target="_blank" rel="noopener">Google ML Crash Course</a><span class="sep">—</span><span class="d">Google's free crash course covering core ML concepts</span></li>
+        <li><a href="https://www.coursera.org/learn/machine-learning" target="_blank" rel="noopener">Machine Learning by Andrew Ng</a><span class="sep">—</span><span class="d">Andrew Ng's foundational machine learning course on Coursera</span></li>
+        <li><a href="http://ema.cri-info.cm/wp-content/uploads/2019/07/2019BurkovTheHundred-pageMachineLearning.pdf" target="_blank" rel="noopener">The Hundred-Page ML Book</a><span class="sep">—</span><span class="d">Concise book covering the essentials of machine learning</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>4. Build practical experience</h4><ul class="res">
+        <li><a href="https://course.fast.ai/" target="_blank" rel="noopener">Practical Deep Learning for Coders – fast.ai</a><span class="sep">—</span><span class="d">fast.ai's hands-on deep learning course for coders</span></li>
+        <li><a href="https://www.coursera.org/learn/machine-learning-projects" target="_blank" rel="noopener">Structured ML Projects – Coursera</a><span class="sep">—</span><span class="d">Andrew Ng's course on structuring machine learning projects</span></li>
+        <li><a href="https://www.youtube.com/watch?v=kCc8FmEb1nY" target="_blank" rel="noopener">Build GPT from Scratch – Karpathy</a><span class="sep">—</span><span class="d">Andrej Karpathy's video walkthrough building a GPT model from scratch</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>5. Specialize</h4><ul class="res">
+        <li><a href="https://huggingface.co/learn/nlp-course/chapter1/1" target="_blank" rel="noopener">NLP Course – Hugging Face</a><span class="sep">—</span><span class="d">Hugging Face's free course on NLP with transformers</span></li>
+        <li><a href="https://huggingface.co/learn/deep-rl-course/unit0/introduction" target="_blank" rel="noopener">Deep RL Course – Hugging Face</a><span class="sep">—</span><span class="d">Hugging Face's free course on deep reinforcement learning</span></li>
+        <li><a href="https://www.kaggle.com/learn/computer-vision" target="_blank" rel="noopener">Computer Vision – Kaggle</a><span class="sep">—</span><span class="d">Kaggle's hands-on computer vision mini-course</span></li>
+        <li><a href="https://www.youtube.com/watch?v=vT1JzLTH4G4&list=PLSVEhWrZWDHQTBmWZufjxpw3s8sveJtnJ" target="_blank" rel="noopener">Deep Learning – CS231n Stanford</a><span class="sep">—</span><span class="d">Stanford's CS231n course on CNNs for visual recognition</span></li>
+        <li><a href="https://pixelbank.dev" target="_blank" rel="noopener">Computer Vision, LLM, VLM Courses – PixelBank</a><span class="sep">—</span><span class="d">PixelBank's course collection on CV, LLMs, and VLMs</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>6. Learn MLOps</h4><ul class="res">
+        <li><a href="https://ml-ops.org/" target="_blank" rel="noopener">Intro to MLOps</a><span class="sep">—</span><span class="d">Introduction to MLOps principles and practices</span></li>
+        <li><a href="https://ml-ops.org/content/three-levels-of-ml-software" target="_blank" rel="noopener">Three Levels of ML Software</a><span class="sep">—</span><span class="d">ml-ops.org's breakdown of the three levels of ML software maturity</span></li>
+        <li><a href="https://fullstackdeeplearning.com/course/2022/" target="_blank" rel="noopener">Full Stack Deep Learning</a><span class="sep">—</span><span class="d">Course on building and deploying production ML systems</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>7. Read research papers</h4><ul class="res">
+        <li><a href="https://arxiv.org/" target="_blank" rel="noopener">ArXiv</a><span class="sep">—</span><span class="d">Preprint server for ML and AI research</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="genai-general">
+      <header class="cat-head"><span class="stamp">✨</span><h2>Generative AI — General</h2><span class="count">11</span></header>
+      <div class="subgroup"><h4>Recommended talks</h4><ul class="res">
+        <li><a href="https://www.youtube.com/watch?v=EWvNQjAaOHw" target="_blank" rel="noopener">Andrej Karpathy – How I Use LLMs</a><span class="sep">—</span><span class="d">Andrej Karpathy's walkthrough of his personal LLM workflow</span></li>
+        <li><a href="https://www.youtube.com/watch?v=zjkBMFhNj_g" target="_blank" rel="noopener">Andrej Karpathy – Intro to Large Language Models (1hr)</a><span class="sep">—</span><span class="d">Andrej Karpathy's hour-long introduction to large language models</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>Visual explainers</h4><ul class="res">
+        <li><a href="http://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">The Illustrated Transformer – Jay Alammar</a><span class="sep">—</span><span class="d">Definitive visual guide to the Transformer architecture</span></li>
+        <li><a href="http://bbycroft.net/llm" target="_blank" rel="noopener">3D Visualization of LLMs – Brendan Bycroft</a><span class="sep">—</span><span class="d">Step-by-step 3D walkthrough of transformer execution</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>Learning paths</h4><ul class="res">
+        <li><a href="https://www.cloudskillsboost.google/paths/118" target="_blank" rel="noopener">Beginner: Introduction to Generative AI</a><span class="sep">—</span><span class="d">Google Cloud Skills Boost path introducing generative AI fundamentals</span></li>
+        <li><a href="https://www.cloudskillsboost.google/paths/236" target="_blank" rel="noopener">Intermediate: Gemini for Google Cloud</a><span class="sep">—</span><span class="d">Learning path on using Gemini within Google Cloud</span></li>
+        <li><a href="https://www.cloudskillsboost.google/paths/183" target="_blank" rel="noopener">Advanced: Generative AI for Developers</a><span class="sep">—</span><span class="d">Advanced Google Cloud path on building with generative AI</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>Coursera courses</h4><ul class="res">
+        <li><a href="https://www.coursera.org/learn/genai-for-executives-and-business-leaders-an-introduction" target="_blank" rel="noopener">GenAI for Executives &amp; Business Leaders: An Introduction</a><span class="sep">—</span><span class="d">Coursera course introducing generative AI concepts for business leaders</span></li>
+        <li><a href="https://www.coursera.org/learn/genai-for-execs-and-business-leaders-integration-strategy" target="_blank" rel="noopener">GenAI for Execs &amp; Business Leaders: Integration Strategy</a><span class="sep">—</span><span class="d">Coursera course on integrating generative AI into business strategy</span></li>
+        <li><a href="https://www.coursera.org/learn/genai-for-product-rd-teams" target="_blank" rel="noopener">GenAI for Product R&amp;D Teams</a><span class="sep">—</span><span class="d">Coursera course on applying generative AI in product R&amp;D</span></li>
+        <li><a href="https://www.coursera.org/learn/genai-for-product-managers" target="_blank" rel="noopener">GenAI for Product Managers</a><span class="sep">—</span><span class="d">Coursera course on generative AI for product management</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="genai-advanced">
+      <header class="cat-head"><span class="stamp">🚀</span><h2>Generative AI — Advanced</h2><span class="count">6</span></header>
+      <div class="subgroup"><h4>Gemini</h4><ul class="res">
+        <li><a href="https://www.deeplearning.ai/short-courses/large-multimodal-model-prompting-with-gemini/" target="_blank" rel="noopener">Large Multimodal Model Prompting with Gemini – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on prompting Gemini's multimodal capabilities</span></li>
+        <li><a href="https://www.coursera.org/learn/gemini-for-application-developers" target="_blank" rel="noopener">Gemini for Application Developers – Coursera</a><span class="sep">—</span><span class="d">Coursera course on building applications with Gemini</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/gemini-cli-code-and-create-with-an-open-source-agent/" target="_blank" rel="noopener">Gemini CLI: Code &amp; Create with an Open-Source Agent</a><span class="sep">—</span><span class="d">DeepLearning.AI course on using the open-source Gemini CLI agent</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>Google ADK</h4><ul class="res">
+        <li><a href="https://learn.deeplearning.ai/courses/building-live-voice-agents-with-googles-adk/information" target="_blank" rel="noopener">Building Live Voice Agents with Google's ADK – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI course on building live voice agents with Google's Agent Development Kit</span></li>
+        <li><a href="https://www.coursera.org/learn/understand-google-cloud-agents" target="_blank" rel="noopener">Understand Google Cloud Agents – Coursera</a><span class="sep">—</span><span class="d">Coursera course explaining Google Cloud's agent-building blocks</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>Model Context Protocol (MCP)</h4><ul class="res">
+        <li><a href="https://www.coursera.org/learn/intro-to-model-context-protocol-mcp" target="_blank" rel="noopener">Intro to Model Context Protocol (MCP) – Coursera (Scrimba)</a><span class="sep">—</span><span class="d">Scrimba course on Coursera introducing the Model Context Protocol</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="prompt-engineering">
+      <header class="cat-head"><span class="stamp">💬</span><h2>Prompt Engineering</h2><span class="count">10</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://www.promptingguide.ai/" target="_blank" rel="noopener">Prompt Engineering Guide</a><span class="sep">—</span><span class="d">Comprehensive guide to prompt engineering techniques</span></li>
+        <li><a href="https://platform.openai.com/docs/guides/prompt-engineering" target="_blank" rel="noopener">Prompt Engineering – OpenAI API</a><span class="sep">—</span><span class="d">OpenAI's official guide to prompt engineering techniques</span></li>
+        <li><a href="https://developers.openai.com/api/docs/guides/prompt-engineering" target="_blank" rel="noopener">Prompt Engineering – OpenAI Developer Docs</a><span class="sep">—</span><span class="d">Official OpenAI developer documentation on prompt engineering best practices</span></li>
+        <li><a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview" target="_blank" rel="noopener">Prompt Engineering Overview – Anthropic</a><span class="sep">—</span><span class="d">Official Anthropic guide to prompt engineering for Claude</span></li>
+        <li><a href="https://code.claude.com/docs/en/prompt-library" target="_blank" rel="noopener">Claude Code Prompt Library</a><span class="sep">—</span><span class="d">Copy-paste prompt examples for Claude Code, tagged by task and role</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/" target="_blank" rel="noopener">ChatGPT Prompt Engineering for Developers – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on prompt engineering with ChatGPT</span></li>
+        <li><a href="https://grow.google/prompting-essentials/" target="_blank" rel="noopener">Google Prompting Essentials</a><span class="sep">—</span><span class="d">Google's free course on prompting essentials</span></li>
+        <li><a href="https://arxiv.org/abs/2406.06608" target="_blank" rel="noopener">The Prompt Report: A Systematic Survey of Prompting Techniques</a><span class="sep">—</span><span class="d">Comprehensive survey of 58 LLM prompting techniques with a unified taxonomy and vocabulary</span></li>
+        <li><a href="https://github.com/anthropics/prompt-eng-interactive-tutorial" target="_blank" rel="noopener">Anthropic Prompt Engineering Interactive Tutorial</a><span class="sep">—</span><span class="d">Hands-on Jupyter notebook tutorial covering prompt engineering techniques for Claude</span></li>
+        <li><a href="https://platform.openai.com/tokenizer" target="_blank" rel="noopener">OpenAI Tokenizer</a><span class="sep">—</span><span class="d">Interactive tool to visualize how text is tokenized and count tokens for OpenAI models</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="rag">
+      <header class="cat-head"><span class="stamp">🔎</span><h2>RAG (Retrieval-Augmented Generation)</h2><span class="count">3</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://www.deeplearning.ai/short-courses/building-evaluating-advanced-rag/" target="_blank" rel="noopener">Building and Evaluating Advanced RAG Applications – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on building and evaluating RAG systems</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/knowledge-graphs-rag/" target="_blank" rel="noopener">Knowledge Graphs for RAG – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on combining knowledge graphs with RAG</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/building-agentic-rag-with-llamaindex/" target="_blank" rel="noopener">Building Agentic RAG with LlamaIndex – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on building agentic RAG pipelines with LlamaIndex</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="fine-tuning">
+      <header class="cat-head"><span class="stamp">⚙️</span><h2>Fine-tuning</h2><span class="count">3</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://www.deeplearning.ai/short-courses/finetuning-large-language-models/" target="_blank" rel="noopener">Finetuning Large Language Models – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on fine-tuning LLMs</span></li>
+        <li><a href="https://www.coursera.org/learn/generative-ai-advanced-fine-tuning-for-llms" target="_blank" rel="noopener">Generative AI Advanced Fine-Tuning for LLMs – Coursera (IBM)</a><span class="sep">—</span><span class="d">IBM's Coursera course on advanced LLM fine-tuning techniques</span></li>
+        <li><a href="https://www.deeplearning.ai/courses/fine-tuning-and-reinforcement-learning-for-llms-intro-to-post-training/" target="_blank" rel="noopener">Fine-tuning &amp; RL for LLMs: Intro to Post-Training – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI course covering post-training techniques including fine-tuning and RL</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="frameworks">
+      <header class="cat-head"><span class="stamp">🛠️</span><h2>Frameworks</h2><span class="count">16</span></header>
+      <div class="subgroup"><h4>LangChain</h4><ul class="res">
+        <li><a href="https://github.com/langchain-ai/langchain" target="_blank" rel="noopener">GitHub – langchain-ai/langchain</a><span class="sep">—</span><span class="d">Framework for building applications powered by LLMs</span></li>
+        <li><a href="https://python.langchain.com/docs/get_started/introduction" target="_blank" rel="noopener">LangChain Documentation</a><span class="sep">—</span><span class="d">Official LangChain documentation</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/langchain-for-llm-application-development/" target="_blank" rel="noopener">LangChain for LLM Application Development – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on building LLM apps with LangChain</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/langchain-chat-with-your-data/" target="_blank" rel="noopener">LangChain: Chat with Your Data – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on building RAG chatbots with LangChain</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/functions-tools-agents-langchain/" target="_blank" rel="noopener">Functions, Tools and Agents with LangChain – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on building agents with LangChain</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>LangGraph</h4><ul class="res">
+        <li><a href="https://github.com/langchain-ai/langgraph" target="_blank" rel="noopener">GitHub – langchain-ai/langgraph</a><span class="sep">—</span><span class="d">Library for building stateful, multi-actor LLM agent workflows</span></li>
+        <li><a href="https://langchain-ai.github.io/langgraph/tutorials/introduction/" target="_blank" rel="noopener">LangGraph Tutorials</a><span class="sep">—</span><span class="d">Official LangGraph tutorials and getting-started guides</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank" rel="noopener">AI Agents in LangGraph – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on building agents with LangGraph</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>CrewAI</h4><ul class="res">
+        <li><a href="https://github.com/crewAIInc/crewAI" target="_blank" rel="noopener">GitHub – crewAIInc/crewAI</a><span class="sep">—</span><span class="d">Framework for orchestrating role-playing autonomous AI agents</span></li>
+        <li><a href="https://www.crewai.com/" target="_blank" rel="noopener">CrewAI Official Site</a><span class="sep">—</span><span class="d">Official site for the CrewAI multi-agent framework</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/multi-ai-agent-systems-with-crewai/" target="_blank" rel="noopener">Multi AI Agent Systems with crewAI – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on building multi-agent systems with crewAI</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/practical-multi-ai-agents-and-advanced-use-cases-with-crewai/" target="_blank" rel="noopener">Practical Multi AI Agents and Advanced Use Cases with crewAI</a><span class="sep">—</span><span class="d">DeepLearning.AI course on advanced multi-agent crewAI use cases</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>Google Agent Development Kit (ADK)</h4><ul class="res">
+        <li><a href="https://google.github.io/adk-docs/" target="_blank" rel="noopener">Google ADK Documentation</a><span class="sep">—</span><span class="d">Official documentation for Google's Agent Development Kit</span></li>
+        <li><a href="https://github.com/google/adk-python" target="_blank" rel="noopener">GitHub – google/adk-python</a><span class="sep">—</span><span class="d">Python SDK for Google's Agent Development Kit</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>Agno (formerly Phidata)</h4><ul class="res">
+        <li><a href="https://docs.agno.com/introduction/agents" target="_blank" rel="noopener">Agno Documentation – Agents</a><span class="sep">—</span><span class="d">Official documentation for building agents with Agno</span></li>
+        <li><a href="https://github.com/agno-agi/agno" target="_blank" rel="noopener">GitHub – agno-agi/agno</a><span class="sep">—</span><span class="d">Lightweight framework for building multi-agent systems</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="agentic-ai">
+      <header class="cat-head"><span class="stamp">🤖</span><h2>Agentic AI</h2><span class="count">16</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://github.com/vostride/agent-qa" target="_blank" rel="noopener">Agent QA – Self-Improving QA Agent</a><span class="sep">—</span><span class="d">Open-source self-improving QA agent that runs natural-language tests across web and mobile applications with persistent memory and self-healing</span></li>
+        <li><a href="https://github.com/gitlawb/zero" target="_blank" rel="noopener">Zero – Open-Source Coding Agent</a><span class="sep">—</span><span class="d">The coding agent that answers to you, your model, your machine, your rules</span></li>
+        <li><a href="https://agentskills.io/home" target="_blank" rel="noopener">Agent Skills – Open Standard for Extending AI Agent Capabilities</a><span class="sep">—</span><span class="d">Open standard for building reusable skills that extend AI agents across 30+ platforms including Claude, GitHub Copilot, and OpenAI Codex</span></li>
+        <li><a href="https://github.com/juliusbrussee/caveman" target="_blank" rel="noopener">Caveman – Token-Saving Output Compression Skill</a><span class="sep">—</span><span class="d">Agent skill that compresses AI output ~65% with terse, fragment-based responses while preserving reasoning; works across Claude Code, Codex, Gemini, Cursor and 30+ agents</span></li>
+        <li><a href="https://github.com/DietrichGebert/ponytail" target="_blank" rel="noopener">Ponytail – Minimal-Code Agent Skill</a><span class="sep">—</span><span class="d">Agent skill enforcing a 'lazy senior developer' philosophy: check YAGNI, codebase, stdlib, platform and existing deps before writing new code (~54% less code); works across 16+ agents</span></li>
+        <li><a href="https://github.com/ModernRelay/omnigraph" target="_blank" rel="noopener">Omnigraph – Lakehouse Graph Database for Agents</a><span class="sep">—</span><span class="d">Operational state and coordination layer for agent fleets with multimodal retrieval, Git-style branching, and object-storage-native deployment</span></li>
+        <li><a href="https://github.com/AgricIDaniel/claude-seo" target="_blank" rel="noopener">Claude SEO – AI-Powered SEO Audit Skill</a><span class="sep">—</span><span class="d">Open-source Claude Code skill that runs 25 sub-skills and 18 parallel agents to audit technical SEO, content quality, schema markup, and AI search optimization with falsifiable recommendations</span></li>
+        <li><a href="https://www.youtube.com/watch?v=Fbr_Solax1w" target="_blank" rel="noopener">Introduction to Agent2Agent (A2A) Protocol – Google Cloud</a><span class="sep">—</span><span class="d">Google Cloud video introducing the Agent2Agent protocol for agent interoperability</span></li>
+        <li><a href="https://www.youtube.com/playlist?list=PL51gEhIbWzJESLuGJUGkG2VZzrPO0H0Rc" target="_blank" rel="noopener">AI Agents Series – FuturMinds (YouTube Playlist)</a><span class="sep">—</span><span class="d">YouTube playlist covering AI agent concepts and tutorials</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/evaluating-ai-agents/" target="_blank" rel="noopener">Evaluating AI Agents – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on evaluating AI agent performance</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/llms-as-operating-systems-agent-memory/" target="_blank" rel="noopener">LLMs as Operating Systems: Agent Memory – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on agent memory architectures</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/" target="_blank" rel="noopener">AI Agents in LangGraph – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on building agents with LangGraph</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/ai-agentic-design-patterns-with-autogen/" target="_blank" rel="noopener">AI Agentic Design Patterns with AutoGen – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on agentic design patterns using AutoGen</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/multi-ai-agent-systems-with-crewai/" target="_blank" rel="noopener">Multi AI Agent Systems with crewAI – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on building multi-agent systems with crewAI</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/building-agentic-rag-with-llamaindex/" target="_blank" rel="noopener">Building Agentic RAG with LlamaIndex – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on building agentic RAG pipelines with LlamaIndex</span></li>
+        <li><a href="https://www.deeplearning.ai/short-courses/event-driven-agentic-document-workflows/" target="_blank" rel="noopener">Event-Driven Agentic Document Workflows – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI short course on event-driven agentic document processing</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="mlops">
+      <header class="cat-head"><span class="stamp">📡</span><h2>MLOps and GenAIOps</h2><span class="count">5</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://www.cloudskillsboost.google/course_templates/927" target="_blank" rel="noopener">MLOps for Generative AI – Google Cloud Skill Boost</a><span class="sep">—</span><span class="d">Google Cloud Skills Boost course on MLOps for generative AI</span></li>
+        <li><a href="https://www.youtube.com/watch?v=UfUoG_Ijgq4" target="_blank" rel="noopener">GenAIOps: Operationalize Generative AI (YouTube)</a><span class="sep">—</span><span class="d">Video overview of operationalizing generative AI systems</span></li>
+        <li><a href="https://ml-ops.org/" target="_blank" rel="noopener">MLOps.org</a><span class="sep">—</span><span class="d">Community resource hub for MLOps best practices</span></li>
+        <li><a href="https://fullstackdeeplearning.com/course/2022/" target="_blank" rel="noopener">Full Stack Deep Learning</a><span class="sep">—</span><span class="d">Course on building and deploying production ML systems</span></li>
+        <li><a href="https://pixelbank.dev/systems" target="_blank" rel="noopener">Systems &amp; Networking for AI Engineers – PixelBank</a><span class="sep">—</span><span class="d">PixelBank course on systems and networking fundamentals for AI engineers</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="security">
+      <header class="cat-head"><span class="stamp">🔒</span><h2>Security</h2><span class="count">3</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" target="_blank" rel="noopener">OWASP Top 10 for Large Language Model Applications</a><span class="sep">—</span><span class="d">OWASP's list of the top 10 security risks for LLM applications</span></li>
+        <li><a href="https://safety.google/cybersecurity-advancements/saif/" target="_blank" rel="noopener">Google's Secure AI Framework (SAIF)</a><span class="sep">—</span><span class="d">Google's framework for building AI systems securely</span></li>
+        <li><a href="https://cloud.google.com/blog/products/identity-security/the-dawn-of-agentic-ai-in-security-operations-at-rsac-2025" target="_blank" rel="noopener">The Dawn of Agentic AI in Security Operations – Google Cloud</a><span class="sep">—</span><span class="d">Google Cloud blog on agentic AI's role in security operations</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="google-cloud">
+      <header class="cat-head"><span class="stamp">☁️</span><h2>Google Cloud AI and ML</h2><span class="count">8</span></header>
+      <div class="subgroup"><h4>Learning paths on Cloud Skills Boost</h4><ul class="res">
+        <li><a href="https://www.cloudskillsboost.google/paths/236" target="_blank" rel="noopener">Gemini for Google Cloud</a><span class="sep">—</span><span class="d">Learning path on using Gemini within Google Cloud</span></li>
+        <li><a href="https://www.cloudskillsboost.google/paths/118" target="_blank" rel="noopener">Beginner: Introduction to Generative AI</a><span class="sep">—</span><span class="d">Google Cloud Skills Boost path introducing generative AI fundamentals</span></li>
+        <li><a href="https://www.cloudskillsboost.google/paths/1872" target="_blank" rel="noopener">Intermediate: Generative AI Labs with Gemini</a><span class="sep">—</span><span class="d">Hands-on labs for generative AI with Gemini</span></li>
+        <li><a href="https://www.cloudskillsboost.google/paths/887" target="_blank" rel="noopener">Deploy and Manage Generative AI Models</a><span class="sep">—</span><span class="d">Learning path on deploying and managing generative AI models on Google Cloud</span></li>
+        <li><a href="https://www.cloudskillsboost.google/paths/17" target="_blank" rel="noopener">Machine Learning Engineer Learning Path</a><span class="sep">—</span><span class="d">Google Cloud's learning path for machine learning engineers</span></li>
+        <li><a href="https://www.cloudskillsboost.google/paths/878" target="_blank" rel="noopener">Build and Modernize Applications With Generative AI</a><span class="sep">—</span><span class="d">Learning path on modernizing applications with generative AI</span></li>
+        <li><a href="https://www.cloudskillsboost.google/paths/882" target="_blank" rel="noopener">Integrate Generative AI Into Your Data Workflow</a><span class="sep">—</span><span class="d">Learning path on integrating generative AI into data workflows</span></li>
+        <li><a href="https://www.cloudskillsboost.google/paths/880" target="_blank" rel="noopener">Generate Smarter Generative AI Outputs</a><span class="sep">—</span><span class="d">Learning path on improving generative AI output quality</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="cost-optimization">
+      <header class="cat-head"><span class="stamp">💰</span><h2>AI Cost Optimization</h2><span class="count">3</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://cloud.google.com/transform/three-proven-strategies-for-optimizing-ai-costs" target="_blank" rel="noopener">Three Proven Strategies for Optimizing AI Costs – Google Cloud</a><span class="sep">—</span><span class="d">Google Cloud blog on strategies to reduce AI costs</span></li>
+        <li><a href="https://cloud.google.com/blog/products/ai-machine-learning/reduce-cost-and-improve-your-ai-workloads" target="_blank" rel="noopener">Reduce Cost and Improve Your AI Workloads – Google Cloud</a><span class="sep">—</span><span class="d">Google Cloud blog on optimizing AI workload cost and performance</span></li>
+        <li><a href="https://cloud.google.com/vertex-ai/pricing" target="_blank" rel="noopener">Vertex AI Pricing</a><span class="sep">—</span><span class="d">Official pricing page for Google Cloud's Vertex AI</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="adopting-genai">
+      <header class="cat-head"><span class="stamp">🏢</span><h2>Adopting GenAI in Organizations</h2><span class="count">3</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://www.coursera.org/specializations/generative-ai-for-executives-and-business-leaders" target="_blank" rel="noopener">Generative AI for Executives and Business Leaders Specialization – Coursera (IBM)</a><span class="sep">—</span><span class="d">Coursera specialization on generative AI strategy for executives</span></li>
+        <li><a href="https://www.coursera.org/learn/generative-ai-for-executives-and-business-leaders-integration-strategy" target="_blank" rel="noopener">GenAI for Execs &amp; Business Leaders: Integration Strategy – Coursera</a><span class="sep">—</span><span class="d">Coursera course on integrating generative AI into business strategy</span></li>
+        <li><a href="https://www.coursera.org/learn/genai-for-everyone" target="_blank" rel="noopener">GenAI for Everyone – Coursera (DeepLearning.AI)</a><span class="sep">—</span><span class="d">DeepLearning.AI's beginner-friendly course on generative AI for everyone</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="productivity">
+      <header class="cat-head"><span class="stamp">🧰</span><h2>AI Tools for Productivity</h2><span class="count">3</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://www.coursera.org/learn/google-maximize-productivity-with-ai-tools" target="_blank" rel="noopener">Maximize Productivity with AI Tools – Coursera (Google)</a><span class="sep">—</span><span class="d">Google's Coursera course on using AI tools to boost productivity</span></li>
+        <li><a href="https://www.coursera.org/professional-certificates/google-ai" target="_blank" rel="noopener">Google AI Professional Certificate – Coursera</a><span class="sep">—</span><span class="d">Google's professional certificate covering practical AI skills</span></li>
+        <li><a href="https://www.coursera.org/professional-certificates/microsoft-365-copilot-for-productivity" target="_blank" rel="noopener">Microsoft 365 Copilot for Productivity – Coursera (Microsoft)</a><span class="sep">—</span><span class="d">Microsoft's Coursera course on using Copilot in Microsoft 365</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="quantum">
+      <header class="cat-head"><span class="stamp">⚛️</span><h2>Quantum Computing and PQC</h2><span class="count">2</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://www.edx.org/learn/computer-science/university-system-of-maryland-introduction-to-post-quantum-cryptography" target="_blank" rel="noopener">Introduction to Post-Quantum Cryptography – edX (UMBC)</a><span class="sep">—</span><span class="d">University of Maryland's edX course on post-quantum cryptography</span></li>
+        <li><a href="https://learning.quantum.ibm.com/course/practical-introduction-to-quantum-safe-cryptography/quantum-safe-cryptography" target="_blank" rel="noopener">Practical Introduction to Quantum-Safe Cryptography – IBM Quantum</a><span class="sep">—</span><span class="d">IBM Quantum's course on quantum-safe cryptography</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="sdlc">
+      <header class="cat-head"><span class="stamp">💻</span><h2>AI Augmented SDLC</h2><span class="count">3</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://www.deeplearning.ai/courses/generative-ai-for-software-development/" target="_blank" rel="noopener">Generative AI for Software Development Specialization – DeepLearning.AI</a><span class="sep">—</span><span class="d">DeepLearning.AI specialization on using generative AI in software development</span></li>
+        <li><a href="https://www.coursera.org/specializations/ai-powered-software-development-certification" target="_blank" rel="noopener">AI-Powered Software Development – Coursera</a><span class="sep">—</span><span class="d">Coursera specialization on AI-powered software development practices</span></li>
+        <li><a href="https://learn.microsoft.com/en-us/training/paths/copilot/" target="_blank" rel="noopener">GitHub Copilot Fundamentals – Microsoft Learn</a><span class="sep">—</span><span class="d">Microsoft Learn path covering GitHub Copilot fundamentals</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="coming-innovations">
+      <header class="cat-head"><span class="stamp">🔮</span><h2>Coming Innovations in LLMs</h2><span class="count">1</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://deepmind.google/discover/blog/" target="_blank" rel="noopener">Google DeepMind Blog</a><span class="sep">—</span><span class="d">Latest research and announcements from Google DeepMind</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="courses">
+      <header class="cat-head"><span class="stamp">🎓</span><h2>Courses</h2><span class="count">10</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://www.coursera.org/learn/machine-learning" target="_blank" rel="noopener">Machine Learning by Andrew Ng (Coursera)</a><span class="sep">—</span><span class="d">Andrew Ng's foundational machine learning course on Coursera</span></li>
+        <li><a href="https://www.coursera.org/learn/ai-for-everyone" target="_blank" rel="noopener">AI For Everyone by Andrew Ng (Coursera)</a><span class="sep">—</span><span class="d">Andrew Ng's non-technical introduction to AI for business</span></li>
+        <li><a href="https://www.coursera.org/specializations/deep-learning" target="_blank" rel="noopener">Deep Learning Specialization (Coursera)</a><span class="sep">—</span><span class="d">Andrew Ng's five-course specialization on deep learning</span></li>
+        <li><a href="https://www.edx.org/course/machine-learning-with-python-a-practical-introduct" target="_blank" rel="noopener">Machine Learning with Python (edX – IBM)</a><span class="sep">—</span><span class="d">IBM's edX course on practical machine learning with Python</span></li>
+        <li><a href="https://www.coursera.org/specializations/reinforcement-learning" target="_blank" rel="noopener">Reinforcement Learning Specialization (Coursera)</a><span class="sep">—</span><span class="d">University of Alberta's Coursera specialization on reinforcement learning</span></li>
+        <li><a href="https://www.youtube.com/watch?v=vT1JzLTH4G4&list=PLSVEhWrZWDHQTBmWZufjxpw3s8sveJtnJ" target="_blank" rel="noopener">CS231n: CNNs for Visual Recognition (Stanford)</a><span class="sep">—</span><span class="d">Stanford's CS231n course on CNNs for visual recognition</span></li>
+        <li><a href="https://www.youtube.com/watch?v=2pWv7GOvuf0&list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ" target="_blank" rel="noopener">RL Course by David Silver</a><span class="sep">—</span><span class="d">David Silver's classic reinforcement learning lecture series</span></li>
+        <li><a href="https://www.youtube.com/watch?v=rmVRLeJRkl4&list=PLoROMvodv4rMFqRtEuo6SGjY4XbRIVRd4" target="_blank" rel="noopener">NLP with Deep Learning – Stanford CS224n</a><span class="sep">—</span><span class="d">Stanford's CS224n course on deep learning for NLP</span></li>
+        <li><a href="https://course.fast.ai/" target="_blank" rel="noopener">Practical Deep Learning for Coders – fast.ai</a><span class="sep">—</span><span class="d">fast.ai's hands-on deep learning course for coders</span></li>
+        <li><a href="https://pixelbank.dev" target="_blank" rel="noopener">CV, LLM, VLM Courses – PixelBank</a><span class="sep">—</span><span class="d">PixelBank's course collection on CV, LLMs, and VLMs</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="certifications">
+      <header class="cat-head"><span class="stamp">🏆</span><h2>Certifications</h2><span class="count">4</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/" target="_blank" rel="noopener">AWS Certified Machine Learning Engineer – Associate</a><span class="sep">—</span><span class="d">AWS certification validating machine learning engineering skills</span></li>
+        <li><a href="https://skillbuilder.aws/" target="_blank" rel="noopener">AWS Certified AI Practitioner – Skill Builder</a><span class="sep">—</span><span class="d">AWS certification covering foundational AI and ML knowledge</span></li>
+        <li><a href="https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-engineer/" target="_blank" rel="noopener">Microsoft Certified: Azure AI Engineer Associate</a><span class="sep">—</span><span class="d">Microsoft certification for building AI solutions on Azure</span></li>
+        <li><a href="https://online.stanford.edu/programs/artificial-intelligence-professional-program" target="_blank" rel="noopener">Stanford AI and Machine Learning Certificate</a><span class="sep">—</span><span class="d">Stanford's professional certificate program in AI and machine learning</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="books">
+      <header class="cat-head"><span class="stamp">📚</span><h2>Books</h2><span class="count">8</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://www.amazon.com/Hands-Large-Language-Models-Understanding/dp/1098150961" target="_blank" rel="noopener">Hands-On Large Language Models – Jay Alammar &amp; Maarten Grootendorst</a><span class="sep">—</span><span class="d">GitHub notebooks available</span></li>
+        <li><a href="https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/" target="_blank" rel="noopener">Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow</a><span class="sep">—</span><span class="d">Practical guide to ML and deep learning with popular Python libraries</span></li>
+        <li><a href="https://www.oreilly.com/library/view/ai-engineering/9781098166298/" target="_blank" rel="noopener">AI Engineering: Building Applications with Foundational Models</a><span class="sep">—</span><span class="d">O'Reilly book on building applications with foundation models</span></li>
+        <li><a href="https://huyenchip.com/ml-interviews-book/" target="_blank" rel="noopener">Introduction to Machine Learning Interviews – Chip Huyen</a><span class="sep">—</span><span class="d">Chip Huyen's free book preparing candidates for ML interviews</span></li>
+        <li><a href="https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/" target="_blank" rel="noopener">Designing Data-Intensive Applications</a><span class="sep">—</span><span class="d">Classic book on building reliable, scalable data systems</span></li>
+        <li><a href="https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/" target="_blank" rel="noopener">Designing Machine Learning Systems</a><span class="sep">—</span><span class="d">Chip Huyen's book on building production-ready ML systems</span></li>
+        <li><a href="https://www.deeplearningbook.org/" target="_blank" rel="noopener">Deep Learning (Goodfellow, Bengio, Courville)</a><span class="sep">—</span><span class="d">The definitive textbook on deep learning theory and practice</span></li>
+        <li><a href="https://mlstory.org/pdf/patterns.pdf" target="_blank" rel="noopener">Patterns, Predictions, and Actions – Hardt &amp; Recht</a><span class="sep">—</span><span class="d">Free textbook covering supervised learning, deep learning, causal inference, and RL</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="papers">
+      <header class="cat-head"><span class="stamp">📄</span><h2>Must-Read Research Papers</h2><span class="count">11</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://arxiv.org/pdf/1706.03762" target="_blank" rel="noopener">Attention Is All You Need (Google)</a><span class="sep">—</span><span class="d">The paper that introduced the Transformer architecture</span></li>
+        <li><a href="https://arxiv.org/abs/2005.14165" target="_blank" rel="noopener">Language Models are Few-Shot Learners – GPT-3 (OpenAI)</a><span class="sep">—</span><span class="d">Introduces GPT-3, a 175B parameter model demonstrating strong few-shot learning across NLP tasks</span></li>
+        <li><a href="https://arxiv.org/abs/2201.11903" target="_blank" rel="noopener">Chain-of-Thought Prompting Elicits Reasoning in Large Language Models (Google)</a><span class="sep">—</span><span class="d">Introduces chain-of-thought prompting, showing intermediate reasoning steps significantly improve LLM performance on complex tasks</span></li>
+        <li><a href="https://arxiv.org/pdf/2501.12948" target="_blank" rel="noopener">DeepSeek R1: Incentivizing Reasoning Capability in LLMs</a><span class="sep">—</span><span class="d">Paper detailing DeepSeek's reasoning-focused R1 model trained with reinforcement learning</span></li>
+        <li><a href="https://arxiv.org/pdf/2209.07663" target="_blank" rel="noopener">Monolith: Real Time Recommendation System (TikTok/ByteDance)</a><span class="sep">—</span><span class="d">TikTok/ByteDance's paper on their real-time recommendation system</span></li>
+        <li><a href="https://arxiv.org/pdf/1810.04805" target="_blank" rel="noopener">BERT: Pre-training of Deep Bidirectional Transformers</a><span class="sep">—</span><span class="d">Paper introducing BERT, a bidirectional transformer for language understanding</span></li>
+        <li><a href="https://arxiv.org/pdf/1611.03530" target="_blank" rel="noopener">Understanding Deep Learning Requires Rethinking Generalization</a><span class="sep">—</span><span class="d">Paper challenging traditional views of generalization in deep learning</span></li>
+        <li><a href="https://arxiv.org/pdf/1312.5602" target="_blank" rel="noopener">Playing Atari with Deep Reinforcement Learning</a><span class="sep">—</span><span class="d">DeepMind's paper introducing deep Q-networks for Atari games</span></li>
+        <li><a href="https://arxiv.org/pdf/1503.02531" target="_blank" rel="noopener">Distilling the Knowledge in a Neural Network</a><span class="sep">—</span><span class="d">Hinton et al.'s paper introducing knowledge distillation</span></li>
+        <li><a href="https://spinningup.openai.com/en/latest/spinningup/keypapers.html" target="_blank" rel="noopener">OpenAI Key Papers in Deep RL</a><span class="sep">—</span><span class="d">OpenAI's curated reading list of foundational deep RL papers</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>Research discovery tools</h4><ul class="res">
+        <li><a href="https://asta.allen.ai" target="_blank" rel="noopener">Ai2 Asta</a><span class="sep">—</span><span class="d">Agentic research assistant by Allen Institute for AI; discovers and synthesizes literature across 200M+ papers</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="tools">
+      <header class="cat-head"><span class="stamp">🔨</span><h2>Tools and Frameworks</h2><span class="count">8</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://www.youtube.com/watch?v=V_xro1bcAuA" target="_blank" rel="noopener">PyTorch</a><span class="sep">—</span><span class="d">Video introduction to the PyTorch deep learning framework</span></li>
+        <li><a href="https://www.youtube.com/watch?v=tPYj3fFJGjk" target="_blank" rel="noopener">TensorFlow</a><span class="sep">—</span><span class="d">Video introduction to the TensorFlow deep learning framework</span></li>
+        <li><a href="https://playground.tensorflow.org" target="_blank" rel="noopener">TensorFlow Playground</a><span class="sep">—</span><span class="d">Browser-based neural network experimentation tool</span></li>
+        <li><a href="https://scikit-learn.org/stable/getting_started.html" target="_blank" rel="noopener">Scikit-Learn</a><span class="sep">—</span><span class="d">Official getting-started guide for the scikit-learn library</span></li>
+        <li><a href="https://xgboost.readthedocs.io/en/latest/" target="_blank" rel="noopener">XGBoost</a><span class="sep">—</span><span class="d">Official documentation for the XGBoost gradient boosting library</span></li>
+        <li><a href="https://keras.io/getting_started/" target="_blank" rel="noopener">Keras</a><span class="sep">—</span><span class="d">Official getting-started guide for the Keras deep learning API</span></li>
+        <li><a href="https://github.com/openai/whisper" target="_blank" rel="noopener">Whisper – OpenAI</a><span class="sep">—</span><span class="d">OpenAI's open-source automatic speech recognition model</span></li>
+        <li><a href="https://www.canirun.ai/" target="_blank" rel="noopener">Can I Run AI?</a><span class="sep">—</span><span class="d">Check if your hardware can run AI models locally</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="youtube">
+      <header class="cat-head"><span class="stamp">▶️</span><h2>YouTube Channels</h2><span class="count">5</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://www.youtube.com/watch?v=jGwO_UgTS7I&list=PLoROMvodv4rMiGQp3WXShtMGgzqpfVfbU" target="_blank" rel="noopener">Stanford Online</a><span class="sep">—</span><span class="d">Stanford's YouTube channel featuring AI and ML lecture series</span></li>
+        <li><a href="https://www.youtube.com/watch?v=VMj-3S1tku0&list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ" target="_blank" rel="noopener">Andrej Karpathy</a><span class="sep">—</span><span class="d">Andrej Karpathy's channel on deep learning and LLMs from scratch</span></li>
+        <li><a href="https://www.youtube.com/watch?v=i_LwzRVP7bg" target="_blank" rel="noopener">FreeCodeCamp</a><span class="sep">—</span><span class="d">FreeCodeCamp's channel with full-length coding and ML courses</span></li>
+        <li><a href="https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" target="_blank" rel="noopener">3Blue1Brown</a><span class="sep">—</span><span class="d">Grant Sanderson's channel known for visual, intuitive math explanations</span></li>
+        <li><a href="https://www.youtube.com/watch?v=OGxgnH8y2NM&list=PLQVvvaa0QuDfKTOs3Keq_kaG2P55YRn5v" target="_blank" rel="noopener">Sentdex</a><span class="sep">—</span><span class="d">Channel with practical Python and machine learning tutorials</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="research-blogs">
+      <header class="cat-head"><span class="stamp">🔬</span><h2>Research Blogs</h2><span class="count">7</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://openai.com/news/" target="_blank" rel="noopener">OpenAI Blog</a><span class="sep">—</span><span class="d">Official news and research updates from OpenAI</span></li>
+        <li><a href="https://deepmind.google/discover/blog/" target="_blank" rel="noopener">Google DeepMind</a><span class="sep">—</span><span class="d">Official blog covering DeepMind's research and announcements</span></li>
+        <li><a href="https://research.google/blog/" target="_blank" rel="noopener">Google Research</a><span class="sep">—</span><span class="d">Google's official blog on research across AI and computer science</span></li>
+        <li><a href="https://machinelearning.apple.com/" target="_blank" rel="noopener">Apple ML Research</a><span class="sep">—</span><span class="d">Apple's official machine learning research blog</span></li>
+        <li><a href="https://www.amazon.science/blog" target="_blank" rel="noopener">Amazon Science</a><span class="sep">—</span><span class="d">Amazon's blog covering science and ML research across the company</span></li>
+        <li><a href="https://www.microsoft.com/en-us/ai/blog/" target="_blank" rel="noopener">Microsoft AI</a><span class="sep">—</span><span class="d">Microsoft's official blog on AI research and products</span></li>
+        <li><a href="https://ai.meta.com/blog/" target="_blank" rel="noopener">Meta AI Blog</a><span class="sep">—</span><span class="d">Meta's official blog on AI research and models</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="applied-blogs">
+      <header class="cat-head"><span class="stamp">📝</span><h2>Applied AI/ML Blogs</h2><span class="count">8</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://thedeveloperstory.com/2026/06/24/everything-you-need-to-know-about-ai-agent-engineering-in-brief/" target="_blank" rel="noopener">Everything You Need To Know About AI Agent Engineering, In Brief</a><span class="sep">—</span><span class="d">Explains how Context, Memory, and Harness Engineering differ for AI agents, through one simple analogy</span></li>
+        <li><a href="https://aws.amazon.com/blogs/machine-learning/" target="_blank" rel="noopener">AWS Machine Learning Blog</a><span class="sep">—</span><span class="d">AWS's blog on applied machine learning and ML services</span></li>
+        <li><a href="https://blogs.nvidia.com/blog/category/deep-learning/" target="_blank" rel="noopener">NVIDIA Deep Learning Blog</a><span class="sep">—</span><span class="d">NVIDIA's blog covering deep learning research and applications</span></li>
+        <li><a href="https://medium.com/airbnb-engineering/ai/home" target="_blank" rel="noopener">AirBnB Engineering – AI &amp; ML</a><span class="sep">—</span><span class="d">Airbnb Engineering's posts on applied AI and ML</span></li>
+        <li><a href="https://engineering.atspotify.com/" target="_blank" rel="noopener">Spotify Engineering</a><span class="sep">—</span><span class="d">Spotify's engineering blog covering ML and platform work</span></li>
+        <li><a href="https://eng.uber.com/category/articles/ai/" target="_blank" rel="noopener">Uber Engineering – AI</a><span class="sep">—</span><span class="d">Uber Engineering's articles on applied AI</span></li>
+        <li><a href="https://netflixtechblog.com/" target="_blank" rel="noopener">Netflix Tech Blog</a><span class="sep">—</span><span class="d">Netflix's engineering blog covering ML and recommendation systems</span></li>
+        <li><a href="https://blog.google/technology/ai/" target="_blank" rel="noopener">Google AI Blog</a><span class="sep">—</span><span class="d">Google's blog on applied AI products and research</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="communities">
+      <header class="cat-head"><span class="stamp">👥</span><h2>Communities</h2><span class="count">3</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://www.reddit.com/r/learnmachinelearning/" target="_blank" rel="noopener">r/LearnMachineLearning</a><span class="sep">—</span><span class="d">Reddit community for people learning machine learning</span></li>
+        <li><a href="https://discord.com/invite/dzh728c5t3" target="_blank" rel="noopener">Chip Huyen MLOps Discord</a><span class="sep">—</span><span class="d">Discord community focused on MLOps discussions</span></li>
+        <li><a href="https://discord.com/invite/hugging-face-879548962464493619" target="_blank" rel="noopener">Hugging Face Discord</a><span class="sep">—</span><span class="d">Official Hugging Face community Discord server</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="practice">
+      <header class="cat-head"><span class="stamp">🏋️</span><h2>Practice Problems</h2><span class="count">10</span></header>
+      <div class="subgroup"><h4>Easy</h4><ul class="res">
+        <li><a href="https://www.deep-ml.com/problems/1" target="_blank" rel="noopener">Matrix times Vector</a><span class="sep">—</span><span class="d">Deep-ML coding problem on matrix-vector multiplication</span></li>
+        <li><a href="https://www.kaggle.com/c/titanic" target="_blank" rel="noopener">Titanic: ML from Disaster – Kaggle</a><span class="sep">—</span><span class="d">Kaggle's classic beginner competition predicting Titanic survival</span></li>
+        <li><a href="https://www.kaggle.com/competitions/home-data-for-ml-course" target="_blank" rel="noopener">Predicting House Prices – Kaggle</a><span class="sep">—</span><span class="d">Kaggle competition on predicting house prices with regression</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>Medium</h4><ul class="res">
+        <li><a href="https://www.deep-ml.com/problems/24" target="_blank" rel="noopener">Single Neuron</a><span class="sep">—</span><span class="d">Deep-ML coding problem implementing a single neuron</span></li>
+        <li><a href="https://www.deep-ml.com/problems/17" target="_blank" rel="noopener">K-Means Clustering</a><span class="sep">—</span><span class="d">Deep-ML coding problem implementing K-Means clustering from scratch</span></li>
+        <li><a href="https://www.kaggle.com/c/home-credit-default-risk" target="_blank" rel="noopener">Predicting Loan Default Risk – Kaggle</a><span class="sep">—</span><span class="d">Kaggle competition on predicting loan default risk</span></li>
+        <li><a href="https://www.kaggle.com/c/sentiment-analysis-on-movie-reviews" target="_blank" rel="noopener">Sentiment Analysis on Movie Reviews – Kaggle</a><span class="sep">—</span><span class="d">Kaggle competition on classifying movie review sentiment</span></li>
+      </ul></div>
+      <div class="subgroup"><h4>Hard</h4><ul class="res">
+        <li><a href="https://www.deep-ml.com/problems/20" target="_blank" rel="noopener">Decision Tree Learning</a><span class="sep">—</span><span class="d">Deep-ML coding problem implementing decision tree learning</span></li>
+        <li><a href="https://www.deep-ml.com/problems/62" target="_blank" rel="noopener">Implement a Simple RNN with Backpropagation</a><span class="sep">—</span><span class="d">Deep-ML coding problem implementing an RNN with backpropagation from scratch</span></li>
+        <li><a href="https://www.kaggle.com/c/generative-dog-images" target="_blank" rel="noopener">GANs for Image Synthesis – Kaggle</a><span class="sep">—</span><span class="d">Kaggle competition on generating images with GANs</span></li>
+      </ul></div>
+    </section>
+
+    <section class="cat" id="interview">
+      <header class="cat-head"><span class="stamp">🎯</span><h2>Interview Preparation</h2><span class="count">6</span></header>
+      <div class="subgroup"><ul class="res">
+        <li><a href="https://huyenchip.com/ml-interviews-book/" target="_blank" rel="noopener">Introduction to Machine Learning Interviews – Chip Huyen</a><span class="sep">—</span><span class="d">Chip Huyen's free book preparing candidates for ML interviews</span></li>
+        <li><a href="https://github.com/khangich/machine-learning-interview" target="_blank" rel="noopener">ML Interviews MVP – GitHub</a><span class="sep">—</span><span class="d">Curated GitHub repo of resources for ML interview preparation</span></li>
+        <li><a href="https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/" target="_blank" rel="noopener">Designing Machine Learning Systems</a><span class="sep">—</span><span class="d">Chip Huyen's book on building production-ready ML systems</span></li>
+        <li><a href="https://github.com/mallahyari/ml-practical-usecases" target="_blank" rel="noopener">ML System Design: 650 Case Studies – GitHub</a><span class="sep">—</span><span class="d">Real-world ML use cases from 100+ companies including Netflix, Airbnb, and Uber</span></li>
+        <li><a href="https://github.com/rohitg00/ai-engineering-from-scratch" target="_blank" rel="noopener">AI Engineering from Scratch – GitHub</a><span class="sep">—</span><span class="d">GitHub repo teaching AI engineering concepts from first principles</span></li>
+        <li><a href="https://pixelbank.dev/collections" target="_blank" rel="noopener">ML Coding Questions – PixelBank</a><span class="sep">—</span><span class="d">PixelBank's collection of ML coding interview questions</span></li>
+      </ul></div>
+    </section>
+
+  </div>
+</section>
+
+<div class="cta-band">
+  <div class="wrap">
+    <h2>227 resources are waiting. None of them are behind a signup wall.</h2>
+    <p class="lede">The Atlas is free to browse, link to, and bookmark — no account, no email gate.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#top">↑ Back to top</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="brand"><span class="mark">/=/</span> AI/ML Atlas</div>
+      <div style="display:flex; gap:24px; font-size:0.86rem;">
+        <a href="#full-index">Browse the index</a>
+        <a href="https://github.com/viveknaskar/everything-ai-ml" target="_blank" rel="noopener">Source list ↗</a>
+      </div>
+    </div>
+    <p>Content curated from <a href="https://github.com/viveknaskar/everything-ai-ml" target="_blank" rel="noopener">viveknaskar/everything-ai-ml</a> (MIT licensed). AI/ML Atlas is an independently maintained, unofficial index — not affiliated with the original project.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var entries = [
+    {id:"AIML-014", title:"Attention Is All You Need", source:"arxiv.org", cat:"Must-Read Papers"},
+    {id:"AIML-091", title:"LangGraph Tutorials", source:"langchain-ai.github.io", cat:"Frameworks"},
+    {id:"AIML-133", title:"OWASP Top 10 for LLM Apps", source:"owasp.org", cat:"Security"},
+    {id:"AIML-058", title:"The Illustrated Transformer", source:"jalammar.github.io", cat:"Generative AI"},
+    {id:"AIML-201", title:"Designing ML Systems", source:"oreilly.com", cat:"Interview Prep"}
+  ];
+  var body = document.getElementById('termBody');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var i = 0;
+  function render(){
+    var e = entries[i];
+    body.innerHTML =
+      '<div class="term-row"><span class="k">entry</span><span class="v">'+e.id+'</span></div>' +
+      '<div class="term-row"><span class="k">title</span><span class="v title">'+e.title+'</span></div>' +
+      '<div class="term-row"><span class="k">source</span><span class="v">'+e.source+'</span></div>' +
+      '<div class="term-row"><span class="k">category</span><span class="v">'+e.cat+'</span></div>' +
+      '<div class="term-row"><span class="k">status</span><span class="v ok">&#10003; verified</span></div>' +
+      '<div class="term-row"><span class="k">&nbsp;</span><span class="v">&gt; scanning next entry<span class="term-cursor"></span></span></div>';
+  }
+  render();
+  if (!reduced){
+    setInterval(function(){ i = (i+1) % entries.length; render(); }, 3200);
+  }
+
+  var canvas = document.getElementById('grid');
+  var ctx = canvas.getContext('2d');
+  var w, h, dpr = Math.min(window.devicePixelRatio || 1, 2);
+  function size(){
+    w = canvas.parentElement.offsetWidth; h = canvas.parentElement.offsetHeight;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  size();
+  window.addEventListener('resize', size);
+
+  var gap = 34, t = 0;
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    var cols = Math.ceil(w/gap)+1, rows = Math.ceil(h/gap)+1;
+    var scanY = (h * 0.5) + Math.sin(t*0.4) * h * 0.4;
+    for (var r=0; r<rows; r++){
+      for (var c=0; c<cols; c++){
+        var x = c*gap, y = r*gap;
+        var dist = Math.abs(y - scanY);
+        var glow = Math.max(0, 1 - dist/160);
+        ctx.beginPath();
+        ctx.arc(x, y, 1.1 + glow*1.2, 0, Math.PI*2);
+        ctx.fillStyle = glow > 0.05 ? 'rgba(53,226,196,'+(0.12+glow*0.55)+')' : 'rgba(160,170,200,0.10)';
+        ctx.fill();
+      }
+    }
+    t += 0.012;
+    if (!reduced) requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+<script>
+(function(){
+  var search = document.getElementById('indexSearch');
+  var matchCount = document.getElementById('indexMatchCount');
+  if (!search) return;
+  var cats = Array.prototype.slice.call(document.querySelectorAll('#full-index .cat'));
+
+  function run(){
+    var q = search.value.trim().toLowerCase();
+    var totalVisible = 0;
+    cats.forEach(function(cat){
+      var subgroups = Array.prototype.slice.call(cat.querySelectorAll('.subgroup'));
+      var catVisible = 0;
+      subgroups.forEach(function(sg){
+        var items = Array.prototype.slice.call(sg.querySelectorAll('li'));
+        var sgVisible = 0;
+        items.forEach(function(li){
+          var match = !q || li.textContent.toLowerCase().indexOf(q) !== -1;
+          li.classList.toggle('hidden', !match);
+          if (match) sgVisible++;
+        });
+        sg.style.display = sgVisible ? '' : 'none';
+        catVisible += sgVisible;
+      });
+      cat.classList.toggle('no-match', catVisible === 0);
+      totalVisible += catVisible;
+    });
+    matchCount.textContent = q ? (totalVisible + ' match' + (totalVisible === 1 ? '' : 'es')) : '';
+  }
+
+  search.addEventListener('input', run);
+})();
+</script>
+</body>
+</html>
