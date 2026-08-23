@@ -1,7 +1,7 @@
 "use client";
 
 import { useAtlas } from "@/context/AtlasContext";
-import { SunIcon, MoonIcon, StarIcon } from "./icons";
+import { SunIcon, MoonIcon, StarIcon, SearchIcon } from "./icons";
 import ScrollLink from "./ScrollLink";
 
 export default function Nav() {
@@ -19,8 +19,10 @@ export default function Nav() {
         <ScrollLink to="full-index">Full index</ScrollLink>
       </div>
       <div className="nav-right">
-        <button type="button" className="btn btn-ghost kbd-btn" onClick={() => setPaletteOpen(true)}>
-          Search <kbd>⌘K</kbd>
+        <button type="button" className="btn btn-ghost kbd-btn" onClick={() => setPaletteOpen(true)} aria-label="Search">
+          <SearchIcon />
+          <span className="kbd-btn-label">Search</span>
+          <kbd>⌘K</kbd>
         </button>
         <button
           type="button"
