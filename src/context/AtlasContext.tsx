@@ -16,6 +16,8 @@ type AtlasContextValue = {
   setSearchQuery: (v: string) => void;
   activeCategory: string | null;
   setActiveCategory: (id: string | null) => void;
+  paletteOpen: boolean;
+  setPaletteOpen: (v: boolean) => void;
 };
 
 const AtlasContext = createContext<AtlasContextValue | null>(null);
@@ -28,6 +30,7 @@ export function AtlasProvider({ children }: { children: ReactNode }) {
   const [showBookmarksOnly, setShowBookmarksOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [paletteOpen, setPaletteOpen] = useState(false);
 
   useEffect(() => {
     const stored = window.localStorage.getItem("atlas.theme") as Theme | null;
@@ -75,8 +78,10 @@ export function AtlasProvider({ children }: { children: ReactNode }) {
       setSearchQuery,
       activeCategory,
       setActiveCategory,
+      paletteOpen,
+      setPaletteOpen,
     }),
-    [theme, bookmarks, showBookmarksOnly, searchQuery, activeCategory]
+    [theme, bookmarks, showBookmarksOnly, searchQuery, activeCategory, paletteOpen]
   );
 
   return <AtlasContext.Provider value={value}>{children}</AtlasContext.Provider>;

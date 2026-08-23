@@ -4,7 +4,7 @@ import { useAtlas } from "@/context/AtlasContext";
 import { SunIcon, MoonIcon, StarIcon } from "./icons";
 
 export default function Nav() {
-  const { theme, toggleTheme, bookmarks, showBookmarksOnly, setShowBookmarksOnly } = useAtlas();
+  const { theme, toggleTheme, bookmarks, showBookmarksOnly, setShowBookmarksOnly, setPaletteOpen } = useAtlas();
 
   return (
     <nav className="nav" id="top">
@@ -18,6 +18,9 @@ export default function Nav() {
         <a href="#full-index">Full index</a>
       </div>
       <div className="nav-right">
+        <button type="button" className="btn btn-ghost kbd-btn" onClick={() => setPaletteOpen(true)}>
+          Search <kbd>⌘K</kbd>
+        </button>
         <button
           type="button"
           className={`icon-btn${showBookmarksOnly ? " is-active" : ""}`}

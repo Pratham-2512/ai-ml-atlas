@@ -21,6 +21,8 @@ export type Category = {
   subgroups: Subgroup[];
 };
 
+export type FlatResource = Resource & { categoryId: string; categoryTitle: string; categoryStamp: string };
+
 export const categories: Category[] = [
   {
     "id": "key-concepts",
@@ -1874,3 +1876,9 @@ export const categories: Category[] = [
 export const totalResources = categories.reduce((acc, c) => acc + c.count, 0);
 export const totalCategories = categories.length;
 export const byId = (id: string) => categories.find((c) => c.id === id);
+
+export const flatResources: FlatResource[] = categories.flatMap((c) =>
+  c.subgroups.flatMap((sg) =>
+    sg.items.map((item) => ({ ...item, categoryId: c.id, categoryTitle: c.title, categoryStamp: c.stamp }))
+  )
+);

@@ -38,7 +38,7 @@ try {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${sora.variable} ${manrope.variable} ${jbMono.variable}`}>
+    <html lang="en" className={`${sora.variable} ${manrope.variable} ${jbMono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
       </head>
