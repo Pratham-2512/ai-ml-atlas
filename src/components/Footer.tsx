@@ -30,8 +30,8 @@ export default function Footer() {
             </div>
           </div>
           <p>
-            Built solo by Pratham Bhatia — a personal project I put together while learning AI/ML myself, not a
-            company product.
+            Built solo by Pratham Bhatia, a software engineer with about 8 months of experience — just a personal
+            project I put together while learning AI/ML myself, not a polished company product.
           </p>
         </div>
       </footer>
