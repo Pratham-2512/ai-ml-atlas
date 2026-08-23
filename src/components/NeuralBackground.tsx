@@ -30,6 +30,22 @@ export default function NeuralBackground() {
     let w = 0;
     let h = 0;
     let nodes: Node[] = [];
+    let mouseX = -9999;
+    let mouseY = -9999;
+    const REPEL_RADIUS = 130;
+
+    function onMouseMove(e: MouseEvent) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    }
+    function onMouseLeave() {
+      mouseX = -9999;
+      mouseY = -9999;
+    }
+    if (!reduced) {
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("mouseleave", onMouseLeave);
+    }
 
     function makeNodes() {
       const count = Math.min(90, Math.max(36, Math.round((w * h) / 22000)));
@@ -61,12 +77,30 @@ export default function NeuralBackground() {
       ctx!.fillStyle = p.bg;
       ctx!.fillRect(0, 0, w, h);
 
+      if (mouseX > -9000) {
+        const glowRadius = 260;
+        const glow = ctx!.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, glowRadius);
+        glow.addColorStop(0, `rgba(${p.line},0.12)`);
+        glow.addColorStop(1, `rgba(${p.line},0)`);
+        ctx!.fillStyle = glow;
+        ctx!.fillRect(mouseX - glowRadius, mouseY - glowRadius, glowRadius * 2, glowRadius * 2);
+      }
+
       for (const n of nodes) {
         if (!reduced) {
           n.x += n.vx;
           n.y += n.vy;
           if (n.x < 0 || n.x > w) n.vx *= -1;
           if (n.y < 0 || n.y > h) n.vy *= -1;
+
+          const dx = n.x - mouseX;
+          const dy = n.y - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < REPEL_RADIUS && dist > 0.01) {
+            const push = (1 - dist / REPEL_RADIUS) * 2.2;
+            n.x += (dx / dist) * push;
+            n.y += (dy / dist) * push;
+          }
         }
       }
 
@@ -109,6 +143,8 @@ export default function NeuralBackground() {
 
     return () => {
       window.removeEventListener("resize", size);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseleave", onMouseLeave);
       cancelAnimationFrame(raf);
     };
   }, []);

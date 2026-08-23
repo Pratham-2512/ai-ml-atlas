@@ -119,7 +119,7 @@ section.block{padding:88px 0;}
 .block .lede{color:var(--ink-soft); max-width:60ch; margin:14px 0 0; font-size:1.02rem;}
 
 /* goal picker — editorial numbered list, not cards */
-.goal-picker{padding-top:24px;}
+section.goal-picker{padding-top:0;}
 .goal-list{list-style:none; margin:36px 0 0; padding:0;}
 .goal-list li{border-top:1px solid var(--line-soft);}
 .goal-list li:first-child{border-top:1px solid var(--line);}
@@ -161,7 +161,7 @@ section.block{padding:88px 0;}
 .journey-note{color:var(--ink-soft); font-size:0.92rem; margin:0;}
 
 /* start here */
-.start-here{padding-top:24px; padding-bottom:56px;}
+section.start-here{padding-top:24px; padding-bottom:56px;}
 .start-list{list-style:none; margin:36px 0 0; padding:0; display:flex; flex-direction:column; gap:12px; max-width:640px;}
 .start-list li{
   display:flex; gap:16px; align-items:flex-start; background:var(--surface); border:1px solid var(--line);
@@ -318,7 +318,8 @@ ul.res li .d{color:var(--ink-soft); font-size:0.92rem; margin:4px 0 0;}
   section.block{padding:56px 0;}
   .hero{padding:40px 0 32px;}
   .cta-band{padding:56px 0;}
-  .start-here{padding-top:16px; padding-bottom:40px;}
+  section.start-here{padding-top:16px; padding-bottom:40px;}
+  section.goal-picker{padding-top:0;}
 
   .index-search input{min-width:0;}
 
