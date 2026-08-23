@@ -28,7 +28,7 @@ export default function ResourceItem({ item }: { item: Resource }) {
     <li data-id={item.id}>
       <div className="res-text">
         <div className="res-badges">
-          {isPick && <span className="pick-badge">★ Editor&apos;s Pick</span>}
+          {isPick && <span className="pick-badge">My Pick</span>}
           <span className={`level-badge level-${item.level}`}>{LEVEL_LABEL[item.level]}</span>
           <span className="source-badge">{sourceType}</span>
         </div>

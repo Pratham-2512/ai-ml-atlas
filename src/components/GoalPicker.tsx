@@ -20,18 +20,23 @@ export default function GoalPicker() {
         <p className="eyebrow">Pick your path</p>
         <h2>What do you want to become?</h2>
         <p className="lede">Pick a goal and the index narrows down to exactly what matters for it.</p>
-        <div className="goal-grid">
-          {GOALS.map((g) => (
-            <button key={g.id} type="button" className="goal-card" onClick={() => pick(g)}>
-              <span className="goal-emoji">{g.emoji}</span>
-              <span className="goal-title">{g.title}</span>
-              <span className="goal-blurb">{g.blurb}</span>
-              <span className="goal-meta">
-                {g.categoryIds.length} categories · {goalResourceCount(g)} resources
-              </span>
-            </button>
+        <ol className="goal-list">
+          {GOALS.map((g, i) => (
+            <li key={g.id}>
+              <button type="button" className="goal-row" onClick={() => pick(g)}>
+                <span className="goal-num">{String(i + 1).padStart(2, "0")}</span>
+                <span className="goal-info">
+                  <span className="goal-title">{g.title}</span>
+                  <span className="goal-blurb">{g.blurb}</span>
+                </span>
+                <span className="goal-meta">
+                  {g.categoryIds.length} categories · {goalResourceCount(g)} resources
+                </span>
+                <span className="goal-arrow">→</span>
+              </button>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   );
