@@ -33,8 +33,7 @@ export default function Footer() {
             <a href="https://github.com/viveknaskar/everything-ai-ml" target="_blank" rel="noopener">
               viveknaskar/everything-ai-ml
             </a>{" "}
-            (MIT licensed). AI/ML Atlas is an independently maintained, unofficial index — not affiliated with the
-            original project.
+            (MIT licensed). AI/ML Atlas is made by Pratham Bhatia.
           </p>
         </div>
       </footer>
