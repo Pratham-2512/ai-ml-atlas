@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { totalResources } from "@/data/resources";
 import ScrollLink from "./ScrollLink";
 
 const LOOKUP_ENTRIES = [
@@ -80,23 +79,22 @@ export default function Hero() {
     <header className="hero">
       <div className="wrap hero-inner">
         <div>
-          <p className="kicker">{totalResources} RESOURCES · CHECKED BY HAND</p>
+          <p className="kicker">A GUIDED PATH, NOT A LINK DUMP</p>
           <h1>
-            Stop bookmarking.
+            Learn AI without
             <br />
-            Start learning.
+            getting lost.
           </h1>
           <p className="dek">
-            AI Basecamp is a simple list of the best courses, papers, tools, and blogs about AI and machine
-            learning. Everything is checked by hand and sorted into 30 easy categories, so you spend less time
-            searching and more time learning.
+            Curated roadmaps, resources, and projects to go from beginner to AI builder — checked by hand and
+            organized into a path, not just a pile of links.
           </p>
           <div className="hero-cta">
-            <ScrollLink to="full-index" className="btn btn-primary">
-              Browse all resources →
+            <ScrollLink to="goals" className="btn btn-primary">
+              Find My Roadmap →
             </ScrollLink>
-            <ScrollLink to="how" className="link-more">
-              How we pick resources ↓
+            <ScrollLink to="roadmap-journey" className="link-more">
+              Explore the AI Roadmap ↓
             </ScrollLink>
           </div>
         </div>

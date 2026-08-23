@@ -17,6 +17,8 @@ export default function FullIndex() {
     isBookmarked,
     levelFilter,
     setLevelFilter,
+    goalFilter,
+    setGoalFilter,
   } = useAtlas();
 
   const query = searchQuery.trim().toLowerCase();
@@ -30,7 +32,11 @@ export default function FullIndex() {
     };
   }, [query, showBookmarksOnly, isBookmarked, levelFilter]);
 
-  const visibleCategories = activeCategory ? categories.filter((c) => c.id === activeCategory) : categories;
+  const visibleCategories = activeCategory
+    ? categories.filter((c) => c.id === activeCategory)
+    : goalFilter
+      ? categories.filter((c) => goalFilter.categoryIds.includes(c.id))
+      : categories;
 
   const totalVisible = visibleCategories.reduce(
     (acc, c) => acc + c.subgroups.reduce((a, sg) => a + sg.items.filter(filter).length, 0),
@@ -39,6 +45,7 @@ export default function FullIndex() {
 
   const isFiltering = Boolean(query) || showBookmarksOnly || levelFilter !== "all";
   const activeCategoryTitle = activeCategory ? byId(activeCategory)?.title : null;
+  const activeGoalTitle = !activeCategory && goalFilter ? goalFilter.title : null;
 
   return (
     <section className="block" id="full-index">
@@ -84,6 +91,15 @@ export default function FullIndex() {
           <div className="filter-pill">
             Filtering: {activeCategoryTitle}
             <button type="button" onClick={() => setActiveCategory(null)} title="Clear category filter">
+              <CloseIcon />
+            </button>
+          </div>
+        )}
+
+        {activeGoalTitle && (
+          <div className="filter-pill">
+            {activeGoalTitle} path
+            <button type="button" onClick={() => setGoalFilter(null)} title="Clear goal filter">
               <CloseIcon />
             </button>
           </div>

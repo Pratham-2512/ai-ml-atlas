@@ -22,11 +22,16 @@ type AtlasContextValue = {
   setPaletteOpen: (v: boolean) => void;
   levelFilter: LevelFilter;
   setLevelFilter: (v: LevelFilter) => void;
+  goalFilter: { id: string; title: string; categoryIds: string[] } | null;
+  setGoalFilter: (v: { id: string; title: string; categoryIds: string[] } | null) => void;
+  completedSteps: Set<string>;
+  toggleStepComplete: (id: string) => void;
 };
 
 const AtlasContext = createContext<AtlasContextValue | null>(null);
 
 const BOOKMARKS_KEY = "atlas.bookmarks";
+const PROGRESS_KEY = "atlas.roadmap-progress";
 
 export function AtlasProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("dark");
@@ -36,6 +41,8 @@ export function AtlasProvider({ children }: { children: ReactNode }) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [levelFilter, setLevelFilter] = useState<LevelFilter>("all");
+  const [goalFilter, setGoalFilter] = useState<{ id: string; title: string; categoryIds: string[] } | null>(null);
+  const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const stored = window.localStorage.getItem("atlas.theme") as Theme | null;
@@ -53,6 +60,12 @@ export function AtlasProvider({ children }: { children: ReactNode }) {
     } catch {
       // ignore malformed storage
     }
+    try {
+      const raw = window.localStorage.getItem(PROGRESS_KEY);
+      if (raw) setCompletedSteps(new Set(JSON.parse(raw)));
+    } catch {
+      // ignore malformed storage
+    }
   }, []);
 
   useEffect(() => {
@@ -63,6 +76,10 @@ export function AtlasProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     window.localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(Array.from(bookmarks)));
   }, [bookmarks]);
+
+  useEffect(() => {
+    window.localStorage.setItem(PROGRESS_KEY, JSON.stringify(Array.from(completedSteps)));
+  }, [completedSteps]);
 
   const value = useMemo<AtlasContextValue>(
     () => ({
@@ -87,8 +104,18 @@ export function AtlasProvider({ children }: { children: ReactNode }) {
       setPaletteOpen,
       levelFilter,
       setLevelFilter,
+      goalFilter,
+      setGoalFilter,
+      completedSteps,
+      toggleStepComplete: (id: string) =>
+        setCompletedSteps((prev) => {
+          const next = new Set(prev);
+          if (next.has(id)) next.delete(id);
+          else next.add(id);
+          return next;
+        }),
     }),
-    [theme, bookmarks, showBookmarksOnly, searchQuery, activeCategory, paletteOpen, levelFilter]
+    [theme, bookmarks, showBookmarksOnly, searchQuery, activeCategory, paletteOpen, levelFilter, goalFilter, completedSteps]
   );
 
   return <AtlasContext.Provider value={value}>{children}</AtlasContext.Provider>;

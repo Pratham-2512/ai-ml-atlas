@@ -12,8 +12,8 @@ export default function Nav() {
         <span className="mark">/=/</span> AI Basecamp
       </div>
       <div className="nav-links">
-        <ScrollLink to="how">How we pick</ScrollLink>
-        <ScrollLink to="anatomy">What&apos;s inside</ScrollLink>
+        <ScrollLink to="goals">Roadmaps</ScrollLink>
+        <ScrollLink to="roadmap-journey">The Path</ScrollLink>
         <ScrollLink to="categories">Categories</ScrollLink>
         <ScrollLink to="full-index">Full index</ScrollLink>
       </div>

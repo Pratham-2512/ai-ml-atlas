@@ -5,7 +5,7 @@ import { useAtlas } from "@/context/AtlasContext";
 import ScrollLink from "./ScrollLink";
 
 export default function CategoryGrid() {
-  const { activeCategory, setActiveCategory } = useAtlas();
+  const { activeCategory, setActiveCategory, setGoalFilter } = useAtlas();
 
   return (
     <section className="block" id="categories">
@@ -19,7 +19,10 @@ export default function CategoryGrid() {
               key={c.id}
               to={c.id}
               className={`cat-chip${activeCategory === c.id ? " is-active" : ""}`}
-              onClick={() => setActiveCategory(activeCategory === c.id ? null : c.id)}
+              onClick={() => {
+                setGoalFilter(null);
+                setActiveCategory(activeCategory === c.id ? null : c.id);
+              }}
             >
               {c.title} <span className="cn">{c.count}</span>
             </ScrollLink>
