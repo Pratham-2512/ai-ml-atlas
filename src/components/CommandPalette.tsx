@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { categories, flatResources } from "@/data/resources";
 import { useAtlas } from "@/context/AtlasContext";
+import { scrollToId } from "@/lib/scroll";
 import MatrixRain from "./MatrixRain";
 import { SunIcon, MoonIcon, StarIcon } from "./icons";
 
@@ -54,7 +55,7 @@ export default function CommandPalette() {
   function jumpToCategory(id: string) {
     setActiveCategory(id);
     close();
-    setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+    setTimeout(() => scrollToId(id), 50);
   }
 
   function openResource(href: string) {

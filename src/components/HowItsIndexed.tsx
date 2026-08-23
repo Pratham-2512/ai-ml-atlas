@@ -1,18 +1,18 @@
 const STEPS = [
   {
     idx: "01 / COLLECTED",
-    title: "Pulled from primary sources",
-    body: "Official docs, university courses, arXiv preprints, and engineering blogs — never a listicle repackaging someone else's list.",
+    title: "We only use real, original sources",
+    body: "Official docs, university courses, research papers, and real engineering blogs — never a random list copied from someone else.",
   },
   {
     idx: "02 / VERIFIED",
-    title: "Every link, opened",
-    body: "Courses are checked for a live syllabus, papers are matched against arXiv, and repos are checked for recent activity.",
+    title: "We check every single link",
+    body: "We open every course to make sure it's still active, match papers with arXiv, and check that code repos are still updated.",
   },
   {
     idx: "03 / CATEGORIZED",
-    title: "Filed into 30 categories",
-    body: "From Key Concepts to Interview Prep — so a resource never gets buried in a wall of undifferentiated links.",
+    title: "We sort everything into 30 categories",
+    body: "From Key Concepts to Interview Prep, so nothing gets lost in one giant list.",
   },
 ];
 
@@ -21,10 +21,10 @@ export default function HowItsIndexed() {
     <section className="block" id="how">
       <div className="wrap">
         <p className="eyebrow">Process</p>
-        <h2>How it&apos;s indexed</h2>
+        <h2>How we pick resources</h2>
         <p className="lede">
-          Every entry goes through the same three-step pipeline before it earns a place in the Atlas — no aggregator
-          spam, no dead links, no guesswork.
+          Every resource goes through the same 3 simple steps before it&apos;s added — no spam, no broken links, no
+          guessing.
         </p>
         <div className="steps">
           {STEPS.map((s) => (

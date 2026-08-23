@@ -35,7 +35,7 @@ export default function FullIndex() {
       <div className="wrap">
         <p className="eyebrow">The full index</p>
         <h2>All {totalResources} resources, one by one</h2>
-        <p className="lede">Search across every entry below, or scroll — nothing here is paywalled behind a &quot;view more.&quot;</p>
+        <p className="lede">Search below, or just scroll — nothing is hidden behind a paywall or a &quot;view more&quot; button.</p>
 
         <div className="index-search">
           <input

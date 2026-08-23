@@ -12,21 +12,25 @@ import Footer from "./Footer";
 import BootSequence from "./BootSequence";
 import CommandPalette from "./CommandPalette";
 import SmoothScroll from "./SmoothScroll";
+import NeuralBackground from "./NeuralBackground";
 
 export default function AtlasApp() {
   return (
     <AtlasProvider>
-      <SmoothScroll />
-      <BootSequence />
-      <CommandPalette />
-      <Nav />
-      <Hero />
-      <Stats />
-      <HowItsIndexed />
-      <Anatomy />
-      <CategoryGrid />
-      <FullIndex />
-      <Footer />
+      <NeuralBackground />
+      <div className="app-content">
+        <SmoothScroll />
+        <BootSequence />
+        <CommandPalette />
+        <Nav />
+        <Hero />
+        <Stats />
+        <HowItsIndexed />
+        <Anatomy />
+        <CategoryGrid />
+        <FullIndex />
+        <Footer />
+      </div>
     </AtlasProvider>
   );
 }

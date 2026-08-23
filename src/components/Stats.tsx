@@ -1,4 +1,5 @@
 import { totalResources, totalCategories, byId } from "@/data/resources";
+import StatNumber from "./StatNumber";
 
 export default function Stats() {
   const roadmap = byId("roadmap");
@@ -16,7 +17,7 @@ export default function Stats() {
       <div className="wrap stats-grid">
         {stats.map((s) => (
           <div className="stat" key={s.l}>
-            <div className="n">{s.n}</div>
+            <StatNumber value={s.n} />
             <div className="l">{s.l}</div>
           </div>
         ))}

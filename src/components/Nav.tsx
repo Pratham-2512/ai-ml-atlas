@@ -2,6 +2,7 @@
 
 import { useAtlas } from "@/context/AtlasContext";
 import { SunIcon, MoonIcon, StarIcon } from "./icons";
+import ScrollLink from "./ScrollLink";
 
 export default function Nav() {
   const { theme, toggleTheme, bookmarks, showBookmarksOnly, setShowBookmarksOnly, setPaletteOpen } = useAtlas();
@@ -12,10 +13,10 @@ export default function Nav() {
         <span className="mark">/=/</span> AI/ML Atlas
       </div>
       <div className="nav-links">
-        <a href="#how">How it&apos;s indexed</a>
-        <a href="#anatomy">Anatomy of an entry</a>
-        <a href="#categories">Categories</a>
-        <a href="#full-index">Full index</a>
+        <ScrollLink to="how">How we pick resources</ScrollLink>
+        <ScrollLink to="anatomy">What&apos;s in an entry</ScrollLink>
+        <ScrollLink to="categories">Categories</ScrollLink>
+        <ScrollLink to="full-index">Full index</ScrollLink>
       </div>
       <div className="nav-right">
         <button type="button" className="btn btn-ghost kbd-btn" onClick={() => setPaletteOpen(true)}>
@@ -38,9 +39,9 @@ export default function Nav() {
         >
           {theme === "dark" ? <SunIcon /> : <MoonIcon />}
         </button>
-        <a className="btn btn-primary" href="#full-index">
-          Browse the index
-        </a>
+        <ScrollLink to="full-index" className="btn btn-primary">
+          Browse all resources
+        </ScrollLink>
       </div>
     </nav>
   );

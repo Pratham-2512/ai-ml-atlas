@@ -21,9 +21,9 @@ const jbMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI/ML Atlas — 227 hand-verified AI/ML resources",
+  title: "AI/ML Atlas — 227 easy-to-find AI/ML resources",
   description:
-    "A hand-verified index of the best courses, papers, frameworks, and blogs in AI/ML — sorted into 30 categories, with live search, bookmarks, and no signup wall.",
+    "A simple list of the best courses, papers, tools, and blogs about AI and machine learning — sorted into 30 categories, with search, bookmarks, and no sign-up needed.",
 };
 
 const THEME_INIT = `

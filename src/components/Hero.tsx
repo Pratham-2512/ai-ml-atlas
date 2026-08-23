@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { totalResources } from "@/data/resources";
+import ScrollLink from "./ScrollLink";
 
 const LOOKUP_ENTRIES = [
   { id: "AIML-014", title: "Attention Is All You Need", source: "arxiv.org", cat: "Must-Read Papers" },
@@ -74,91 +75,29 @@ function TerminalCard() {
   );
 }
 
-function ScanGrid() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const reduced = useReducedMotion();
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let w = 0;
-    let h = 0;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-    function size() {
-      const parent = canvas!.parentElement;
-      if (!parent) return;
-      w = parent.offsetWidth;
-      h = parent.offsetHeight;
-      canvas!.width = w * dpr;
-      canvas!.height = h * dpr;
-      canvas!.style.width = w + "px";
-      canvas!.style.height = h + "px";
-      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    size();
-    window.addEventListener("resize", size);
-
-    const gap = 34;
-    let t = 0;
-    let raf = 0;
-    function draw() {
-      ctx!.clearRect(0, 0, w, h);
-      const cols = Math.ceil(w / gap) + 1;
-      const rows = Math.ceil(h / gap) + 1;
-      const scanY = h * 0.5 + Math.sin(t * 0.4) * h * 0.4;
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const x = c * gap;
-          const y = r * gap;
-          const dist = Math.abs(y - scanY);
-          const glow = Math.max(0, 1 - dist / 160);
-          ctx!.beginPath();
-          ctx!.arc(x, y, 1.1 + glow * 1.2, 0, Math.PI * 2);
-          ctx!.fillStyle = glow > 0.05 ? `rgba(53,226,196,${0.12 + glow * 0.55})` : "rgba(160,170,200,0.10)";
-          ctx!.fill();
-        }
-      }
-      t += 0.012;
-      if (!reduced) raf = requestAnimationFrame(draw);
-    }
-    draw();
-
-    return () => {
-      window.removeEventListener("resize", size);
-      cancelAnimationFrame(raf);
-    };
-  }, [reduced]);
-
-  return <canvas ref={canvasRef} id="grid" aria-hidden="true" />;
-}
-
 export default function Hero() {
   return (
     <header className="hero">
-      <ScanGrid />
       <div className="wrap hero-inner">
         <div>
-          <p className="kicker">{totalResources} RESOURCES · HAND-VERIFIED</p>
+          <p className="kicker">{totalResources} RESOURCES · CHECKED BY HAND</p>
           <h1>
             Stop bookmarking.
             <br />
-            Start indexing.
+            Start learning.
           </h1>
           <p className="dek">
-            AI/ML Atlas is a hand-verified index of the best courses, papers, frameworks, and blogs in AI/ML — sorted
-            into 30 categories, so you spend less time searching and more time learning.
+            AI/ML Atlas is a simple list of the best courses, papers, tools, and blogs about AI and machine
+            learning. Everything is checked by hand and sorted into 30 easy categories, so you spend less time
+            searching and more time learning.
           </p>
           <div className="hero-cta">
-            <a className="btn btn-primary" href="#full-index">
-              Browse the index →
-            </a>
-            <a className="link-more" href="#how">
-              See how it&apos;s indexed ↓
-            </a>
+            <ScrollLink to="full-index" className="btn btn-primary">
+              Browse all resources →
+            </ScrollLink>
+            <ScrollLink to="how" className="link-more">
+              How we pick resources ↓
+            </ScrollLink>
           </div>
         </div>
         <TerminalCard />
