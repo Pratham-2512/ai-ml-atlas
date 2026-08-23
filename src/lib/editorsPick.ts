@@ -18,3 +18,9 @@ export const EDITORS_PICK_IDS = new Set([
   "rag-1", // Building and Evaluating Advanced RAG Applications
   "interview-2", // ML Interviews MVP
 ]);
+
+// Personal, one-line reasons — written by Pratham, not generated. Add an
+// entry keyed by the resource id (see EDITORS_PICK_IDS above for which ids
+// map to which titles) as they're written; anything missing falls back to
+// a placeholder in MyPicks.tsx.
+export const PICK_NOTES: Record<string, string> = {};

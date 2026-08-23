@@ -4,11 +4,11 @@ import { flatResources } from "@/data/resources";
 import { scrollToId } from "@/lib/scroll";
 
 const PICKS = [
-  { id: "roadmap-1", why: "Learn to code, step by step — no experience needed." },
-  { id: "roadmap-10", why: "A free, friendly first look at what machine learning actually is." },
-  { id: "roadmap-11", why: "The classic course millions of people started with." },
-  { id: "key-concepts-13", why: "Play with the ideas visually instead of just reading about them." },
-  { id: "genai-general-3", why: "The clearest explanation anywhere of how today's AI models work." },
+  { id: "roadmap-1", why: "Start here if you've never written a line of Python — everything else assumes you have." },
+  { id: "roadmap-10", why: "A fast, free first pass at what machine learning actually is, no math background needed." },
+  { id: "roadmap-11", why: "Once the basics make sense, this is the course that goes deep on the fundamentals." },
+  { id: "key-concepts-13", why: "Use this when a concept makes sense on paper but hasn't clicked yet." },
+  { id: "genai-general-3", why: "Read this once you're ready to understand how models like ChatGPT actually work." },
 ];
 
 export default function StartHere() {

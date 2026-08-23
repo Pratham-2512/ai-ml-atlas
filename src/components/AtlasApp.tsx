@@ -6,9 +6,8 @@ import Hero from "./Hero";
 import GoalPicker from "./GoalPicker";
 import RoadmapJourney from "./RoadmapJourney";
 import StartHere from "./StartHere";
+import MyPicks from "./MyPicks";
 import Stats from "./Stats";
-import HowItsIndexed from "./HowItsIndexed";
-import Anatomy from "./Anatomy";
 import CategoryGrid from "./CategoryGrid";
 import FullIndex from "./FullIndex";
 import Footer from "./Footer";
@@ -30,9 +29,8 @@ export default function AtlasApp() {
         <GoalPicker />
         <RoadmapJourney />
         <StartHere />
+        <MyPicks />
         <Stats />
-        <HowItsIndexed />
-        <Anatomy />
         <CategoryGrid />
         <FullIndex />
         <Footer />
