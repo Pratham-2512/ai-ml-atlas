@@ -91,15 +91,15 @@ button{font:inherit; cursor:pointer;}
   content:""; position:absolute; inset:0; z-index:0;
   background:radial-gradient(ellipse 60% 50% at 50% 0%, var(--accent-soft), transparent 70%);
 }
-.hero-inner{position:relative; z-index:1; max-width:62ch; margin:0 auto; text-align:center;}
+.hero-inner{position:relative; z-index:1; max-width:62ch;}
 .kicker{
   display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:0.78rem;
   color:var(--accent); letter-spacing:0.04em; margin-bottom:18px;
 }
 .kicker::before{content:"●"; font-size:0.6rem;}
 .hero h1{font-size:clamp(2.5rem, 4.2vw, 3.6rem); font-weight:700; line-height:1.05;}
-.hero .dek{margin:20px auto 0; color:var(--ink-soft); font-size:1.1rem; max-width:46ch;}
-.hero-cta{display:flex; align-items:center; justify-content:center; gap:18px; margin-top:32px; flex-wrap:wrap;}
+.hero .dek{margin:20px 0 0; color:var(--ink-soft); font-size:1.1rem; max-width:46ch;}
+.hero-cta{display:flex; align-items:center; gap:18px; margin-top:32px; flex-wrap:wrap;}
 .hero-cta .btn-primary{padding:13px 22px; font-size:0.9rem;}
 .link-more{font-size:0.88rem; color:var(--ink-soft); border-bottom:1px solid var(--line);}
 .link-more:hover{color:var(--ink); border-color:var(--muted);}
