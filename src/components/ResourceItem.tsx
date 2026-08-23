@@ -4,7 +4,6 @@ import { useState } from "react";
 import type { Resource } from "@/data/resources";
 import { useAtlas } from "@/context/AtlasContext";
 import { LEVEL_LABEL } from "@/lib/level";
-import { StarIcon, CopyIcon, CheckIcon } from "./icons";
 
 export default function ResourceItem({ item }: { item: Resource }) {
   const { isBookmarked, toggleBookmark } = useAtlas();
@@ -34,15 +33,14 @@ export default function ResourceItem({ item }: { item: Resource }) {
       <div className="res-actions">
         <button
           type="button"
-          className={`mini-btn${bookmarked ? " is-active" : ""}`}
+          className={`mini-link${bookmarked ? " is-active" : ""}`}
           onClick={() => toggleBookmark(item.id)}
           aria-pressed={bookmarked}
-          title={bookmarked ? "Remove bookmark" : "Bookmark this"}
         >
-          <StarIcon filled={bookmarked} />
+          {bookmarked ? "Saved" : "Save"}
         </button>
-        <button type="button" className="mini-btn" onClick={copyLink} title="Copy link">
-          {copied ? <CheckIcon /> : <CopyIcon />}
+        <button type="button" className="mini-link" onClick={copyLink}>
+          {copied ? "Copied" : "Copy"}
         </button>
       </div>
     </li>

@@ -17,7 +17,6 @@ export default function CategorySection({
   return (
     <section className="cat" id={category.id}>
       <header className="cat-head">
-        <span className="stamp">{category.stamp}</span>
         <h2>{category.title}</h2>
         <span className="count">{category.count}</span>
       </header>

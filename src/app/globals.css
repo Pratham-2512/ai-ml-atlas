@@ -82,14 +82,7 @@ button{font:inherit; cursor:pointer;}
 .btn-primary:hover{transform:translateY(-1px); box-shadow:0 8px 24px -8px var(--accent-soft);}
 .btn-ghost{color:var(--ink-soft);}
 .btn-ghost:hover{border-color:var(--muted); color:var(--ink);}
-.icon-btn{
-  display:inline-flex; align-items:center; justify-content:center;
-  width:38px; height:38px; border-radius:8px; border:1px solid var(--line);
-  background:var(--surface); color:var(--ink-soft); flex-shrink:0;
-  transition:border-color .15s, color .15s, background .15s;
-}
-.icon-btn:hover{border-color:var(--accent); color:var(--accent);}
-.icon-btn.is-active{border-color:var(--warm); color:var(--warm); background:var(--warm-soft);}
+.btn-ghost.is-active{border-color:var(--warm); color:var(--warm); background:var(--warm-soft);}
 @media (prefers-reduced-motion: no-preference){ .btn{transition:border-color .15s, transform .15s, background .15s;} }
 
 /* ---------- Hero ---------- */
@@ -280,14 +273,14 @@ ul.res li a::after{content:" ↗"; font-size:0.72em; color:var(--muted);}
 ul.res li .sep{color:var(--muted); margin:0 3px;}
 ul.res li .d{color:var(--ink-soft); font-size:0.92rem;}
 .res-actions{display:flex; gap:6px; flex-shrink:0;}
-.mini-btn{
-  display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px;
+.mini-link{
+  display:inline-flex; align-items:center; justify-content:center; white-space:nowrap;
+  padding:5px 10px; font-family:var(--font-mono); font-size:0.72rem;
   border-radius:7px; border:1px solid var(--line); background:var(--bg-2); color:var(--muted); flex-shrink:0;
   transition:border-color .15s, color .15s, background .15s;
 }
-.mini-btn:hover{border-color:var(--accent); color:var(--accent);}
-.mini-btn.is-active{border-color:var(--warm); color:var(--warm); background:var(--warm-soft);}
-.mini-btn svg{width:15px; height:15px;}
+.mini-link:hover{border-color:var(--accent); color:var(--accent);}
+.mini-link.is-active{border-color:var(--warm); color:var(--warm); background:var(--warm-soft);}
 
 @media (max-width: 900px){
   .hero-inner{grid-template-columns:1fr;}
@@ -305,8 +298,7 @@ ul.res li .d{color:var(--ink-soft); font-size:0.92rem;}
   .brand{font-size:0.95rem; gap:8px;}
   .brand .mark{width:26px; height:26px;}
   .nav-right .btn-primary{display:none;}
-  .kbd-btn{width:38px; height:38px; padding:0; justify-content:center;}
-  .kbd-btn-label, .kbd-btn kbd{display:none;}
+  .kbd-btn kbd{display:none;}
 
   section.block{padding:56px 0;}
   .hero{padding:40px 0 32px;}
@@ -318,8 +310,6 @@ ul.res li .d{color:var(--ink-soft); font-size:0.92rem;}
   .term-body{padding:16px 14px 18px;}
 
   .index-search input{min-width:0;}
-  .mini-btn{width:34px; height:34px;}
-  .icon-btn{width:40px; height:40px;}
 
   .palette-overlay{padding:8vh 12px 12px;}
   .palette-box{max-height:80vh;}
@@ -343,7 +333,6 @@ html{scrollbar-width:thin; scrollbar-color:color-mix(in srgb, var(--muted) 60%, 
 
 /* ---------- nav ⌘K hint button ---------- */
 .kbd-btn{display:inline-flex; align-items:center; gap:8px;}
-.kbd-btn svg{width:15px; height:15px; flex-shrink:0;}
 .kbd-btn kbd{
   font-family:var(--font-mono); font-size:0.72rem; color:var(--ink-soft); background:var(--bg-2);
   border:1px solid var(--line); border-radius:4px; padding:1px 6px;

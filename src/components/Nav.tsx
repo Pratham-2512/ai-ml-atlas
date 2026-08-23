@@ -1,7 +1,6 @@
 "use client";
 
 import { useAtlas } from "@/context/AtlasContext";
-import { SunIcon, MoonIcon, StarIcon, SearchIcon } from "./icons";
 import ScrollLink from "./ScrollLink";
 
 export default function Nav() {
@@ -19,27 +18,20 @@ export default function Nav() {
         <ScrollLink to="full-index">Full index</ScrollLink>
       </div>
       <div className="nav-right">
-        <button type="button" className="btn btn-ghost kbd-btn" onClick={() => setPaletteOpen(true)} aria-label="Search">
-          <SearchIcon />
-          <span className="kbd-btn-label">Search</span>
-          <kbd>⌘K</kbd>
+        <button type="button" className="btn btn-ghost kbd-btn" onClick={() => setPaletteOpen(true)}>
+          Search <kbd>⌘K</kbd>
         </button>
         <button
           type="button"
-          className={`icon-btn${showBookmarksOnly ? " is-active" : ""}`}
+          className={`btn btn-ghost${showBookmarksOnly ? " is-active" : ""}`}
           onClick={() => setShowBookmarksOnly(!showBookmarksOnly)}
           aria-pressed={showBookmarksOnly}
           title={`Bookmarks (${bookmarks.size})`}
         >
-          <StarIcon filled={showBookmarksOnly} />
+          Saved
         </button>
-        <button
-          type="button"
-          className="icon-btn"
-          onClick={toggleTheme}
-          title={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
-        >
-          {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+        <button type="button" className="btn btn-ghost" onClick={toggleTheme}>
+          {theme === "dark" ? "Light" : "Dark"}
         </button>
         <ScrollLink to="full-index" className="btn btn-primary">
           Browse resources

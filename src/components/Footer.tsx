@@ -29,7 +29,10 @@ export default function Footer() {
               </a>
             </div>
           </div>
-          <p>AI Basecamp is made by Pratham Bhatia.</p>
+          <p>
+            Built solo by Pratham Bhatia — a personal project I put together while learning AI/ML myself, not a
+            company product.
+          </p>
         </div>
       </footer>
     </>
