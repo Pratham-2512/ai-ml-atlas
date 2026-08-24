@@ -18,7 +18,7 @@ export default function MyPicks() {
               <a href={r.href} target="_blank" rel="noopener" className="pick-title">
                 {r.title}
               </a>
-              <p className="pick-note">{PICK_NOTES[r.id] ?? "Reason coming soon."}</p>
+              {PICK_NOTES[r.id] && <p className="pick-note">{PICK_NOTES[r.id]}</p>}
             </li>
           ))}
         </ul>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useAtlas } from "@/context/AtlasContext";
+import { SearchIcon, SunIcon, MoonIcon } from "./icons";
 import ScrollLink from "./ScrollLink";
 
 export default function Nav() {
@@ -18,8 +19,10 @@ export default function Nav() {
         <ScrollLink to="full-index">Full index</ScrollLink>
       </div>
       <div className="nav-right">
-        <button type="button" className="btn btn-ghost kbd-btn" onClick={() => setPaletteOpen(true)}>
-          Search <kbd>⌘K</kbd>
+        <button type="button" className="nav-search" onClick={() => setPaletteOpen(true)}>
+          <SearchIcon />
+          <span className="nav-search-label">Search resources…</span>
+          <kbd>⌘K</kbd>
         </button>
         <button
           type="button"
@@ -30,8 +33,14 @@ export default function Nav() {
         >
           Saved
         </button>
-        <button type="button" className="btn btn-ghost" onClick={toggleTheme}>
-          {theme === "dark" ? "Light" : "Dark"}
+        <button
+          type="button"
+          className="btn btn-ghost theme-toggle"
+          onClick={toggleTheme}
+          title={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+        >
+          {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+          <span>{theme === "dark" ? "Light" : "Dark"}</span>
         </button>
         <ScrollLink to="full-index" className="btn btn-primary">
           Browse resources
