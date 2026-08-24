@@ -78,9 +78,10 @@ export default function NeuralBackground() {
       ctx!.fillRect(0, 0, w, h);
 
       if (mouseX > -9000) {
-        const glowRadius = 260;
+        const glowRadius = 340;
         const glow = ctx!.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, glowRadius);
-        glow.addColorStop(0, `rgba(${p.line},0.12)`);
+        glow.addColorStop(0, `rgba(${p.line},0.14)`);
+        glow.addColorStop(0.35, `rgba(${p.line},0.07)`);
         glow.addColorStop(1, `rgba(${p.line},0)`);
         ctx!.fillStyle = glow;
         ctx!.fillRect(mouseX - glowRadius, mouseY - glowRadius, glowRadius * 2, glowRadius * 2);

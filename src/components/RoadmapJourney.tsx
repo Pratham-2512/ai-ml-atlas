@@ -52,16 +52,17 @@ export default function RoadmapJourney() {
                   <span className="journey-line" />
                 </div>
                 <div className="journey-body">
-                  <h3>{stage.title}</h3>
-                  <ul className="journey-links">
+                  <div className="journey-heading">
+                    <h3>{stage.title}</h3>
+                    <span className="journey-count">{items.length} resources</span>
+                  </div>
+                  <div className="journey-links">
                     {items.map((item) => (
-                      <li key={item.id}>
-                        <a href={item.href} target="_blank" rel="noopener">
-                          {item.title}
-                        </a>
-                      </li>
+                      <a key={item.id} href={item.href} target="_blank" rel="noopener" className="journey-chip">
+                        {item.title}
+                      </a>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               </li>
             );
