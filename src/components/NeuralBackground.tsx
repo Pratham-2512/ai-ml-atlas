@@ -33,6 +33,7 @@ export default function NeuralBackground() {
     let mouseX = -9999;
     let mouseY = -9999;
     const REPEL_RADIUS = 130;
+    const ACTIVATE_RADIUS = 190;
 
     function onMouseMove(e: MouseEvent) {
       mouseX = e.clientX;
@@ -77,17 +78,10 @@ export default function NeuralBackground() {
       ctx!.fillStyle = p.bg;
       ctx!.fillRect(0, 0, w, h);
 
-      if (mouseX > -9000) {
-        const glowRadius = 340;
-        const glow = ctx!.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, glowRadius);
-        glow.addColorStop(0, `rgba(${p.line},0.14)`);
-        glow.addColorStop(0.35, `rgba(${p.line},0.07)`);
-        glow.addColorStop(1, `rgba(${p.line},0)`);
-        ctx!.fillStyle = glow;
-        ctx!.fillRect(mouseX - glowRadius, mouseY - glowRadius, glowRadius * 2, glowRadius * 2);
-      }
+      const activation = new Array(nodes.length).fill(0);
 
-      for (const n of nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
         if (!reduced) {
           n.x += n.vx;
           n.y += n.vy;
@@ -102,9 +96,12 @@ export default function NeuralBackground() {
             n.x += (dx / dist) * push;
             n.y += (dy / dist) * push;
           }
+          if (dist < ACTIVATE_RADIUS) activation[i] = 1 - dist / ACTIVATE_RADIUS;
         }
       }
 
+      // edges near the cursor light up like signal firing between neurons,
+      // instead of a generic glow sitting on top of the scene
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const a = nodes[i];
@@ -113,8 +110,10 @@ export default function NeuralBackground() {
           const dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < LINK_DIST) {
-            ctx!.strokeStyle = `rgba(${p.line},${(1 - dist / LINK_DIST) * 0.16})`;
-            ctx!.lineWidth = 1;
+            const base = (1 - dist / LINK_DIST) * 0.16;
+            const fire = Math.max(activation[i], activation[j]);
+            ctx!.strokeStyle = `rgba(${p.line},${Math.min(1, base + fire * 0.75)})`;
+            ctx!.lineWidth = 1 + fire * 1.4;
             ctx!.beginPath();
             ctx!.moveTo(a.x, a.y);
             ctx!.lineTo(b.x, b.y);
@@ -123,10 +122,20 @@ export default function NeuralBackground() {
         }
       }
 
-      for (const n of nodes) {
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        const fire = activation[i];
+        if (fire > 0.05) {
+          const haloR = 5 + fire * 22;
+          const halo = ctx!.createRadialGradient(n.x, n.y, 0, n.x, n.y, haloR);
+          halo.addColorStop(0, `rgba(${p.node},${fire * 0.45})`);
+          halo.addColorStop(1, `rgba(${p.node},0)`);
+          ctx!.fillStyle = halo;
+          ctx!.fillRect(n.x - haloR, n.y - haloR, haloR * 2, haloR * 2);
+        }
         ctx!.beginPath();
-        ctx!.arc(n.x, n.y, 1.6, 0, Math.PI * 2);
-        ctx!.fillStyle = `rgba(${p.node},0.45)`;
+        ctx!.arc(n.x, n.y, 1.6 + fire * 2, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(${p.node},${0.45 + fire * 0.5})`;
         ctx!.fill();
       }
     }
