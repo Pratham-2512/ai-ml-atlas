@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { categories, flatResources } from "@/data/resources";
 import { useAtlas } from "@/context/AtlasContext";
 import { scrollToId } from "@/lib/scroll";
-import MatrixRain from "./MatrixRain";
 import { SunIcon, MoonIcon, StarIcon } from "./icons";
 
 type Item = {
@@ -22,7 +21,6 @@ export default function CommandPalette() {
     useAtlas();
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(0);
-  const [matrix, setMatrix] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -78,22 +76,6 @@ export default function CommandPalette() {
         },
       ];
     }
-    if (q === "matrix" || q === "wake up neo") {
-      return [
-        {
-          key: "matrix",
-          kind: "easter",
-          icon: "💊",
-          label: "Wake up, Neo…",
-          sublabel: "the Matrix has you",
-          onSelect: () => {
-            setMatrix(true);
-            close();
-          },
-        },
-      ];
-    }
-
     if (!q) {
       return [
         {
@@ -177,7 +159,6 @@ export default function CommandPalette() {
     }
   }
 
-  if (matrix) return <MatrixRain onDone={() => setMatrix(false)} />;
   if (!paletteOpen) return null;
 
   return (
