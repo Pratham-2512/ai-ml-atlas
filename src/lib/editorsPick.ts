@@ -23,4 +23,8 @@ export const EDITORS_PICK_IDS = new Set([
 // entry keyed by the resource id (see EDITORS_PICK_IDS above for which ids
 // map to which titles) as they're written; anything missing falls back to
 // a placeholder in MyPicks.tsx.
-export const PICK_NOTES: Record<string, string> = {};
+export const PICK_NOTES: Record<string, string> = {
+  "key-concepts-13": "Turns concepts I only had as equations into something I can actually see move — I go back to it whenever a topic isn't clicking from text alone.",
+  "roadmap-1": "The one I still point people to when they don't know any Python yet. No shortcuts, but it actually works.",
+  "roadmap-15": "The video that made transformers stop being a black box for me. Build one from scratch and you won't look at an LLM the same way again.",
+};
